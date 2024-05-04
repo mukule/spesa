@@ -1,0 +1,31 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="error-wrapper">
+    <div class="container custom-container-01">
+        <div class="row justify-content-center align-items-center">
+            <div class="col-lg-8">
+                <div class="error-inner">
+                    <div class="row justify-content-center">
+                        <div class="col-lg-6">
+                            <div class="content text-center">
+                                <div class="btn-wrap">
+                                    <a href="{% url 'users:consultant_register' %}" class="btn-common add-to-cart btn-active">Register as a Consultant</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="content text-center">
+                                <div class="btn-wrap">
+                                    <a href="{% url 'users:client_register' %}" class="btn-common add-to-cart btn-active">Register as a Client</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

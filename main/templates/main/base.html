@@ -1,0 +1,96 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+    
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>SecuritiesPesa|Investment and Financial Consultancy</title>
+    <!-- favicon -->
+<link rel="icon" href="{% static 'main/img/favicon.png' %}" sizes="20x20" type="image/png">
+<link rel="stylesheet" href="{% static 'main/css/animate.css' %}">
+<link rel="stylesheet" href="{% static 'main/css/bootstrap.min.css' %}">
+<link rel="stylesheet" href="{% static 'main/css/magnific-popup.css' %}">
+<link rel="stylesheet" href="{% static 'main/css/nice-select.css' %}">
+<link rel="stylesheet" href="{% static 'main/css/odometer.css' %}">
+<link rel="stylesheet" href="{% static 'main/css/font-awesome.min.css' %}">
+<link rel="stylesheet" href="{% static 'main/css/slick.css' %}">
+<link rel="stylesheet" href="{% static 'main/css/style.css' %}">
+<link rel="stylesheet" href="{% static 'main/css/responsive.css' %}">
+<script src="https://cdn.ckeditor.com/4.16.0/standard/ckeditor.js"></script>
+
+
+</head>
+
+    </head>
+
+<body>
+    <main class="page-wrapper">
+       <div class="container">
+        {% include 'main/includes/navbar.html' %}
+        <!-- {% include '../main/includes/messaging.html' %} -->
+        
+        {% block content %}
+        
+        {% endblock content %}
+        
+       </div>
+       {% include '../main/includes/footer.html' %}
+    </main>
+
+    <script>
+        function showSection(sectionId, linkId) {
+            // Hide all sections
+            var sections = document.querySelectorAll('#content > div');
+            sections.forEach(function(section) {
+                section.style.display = 'none';
+            });
+    
+            // Remove the 'btn-active' class from all links
+            var links = document.querySelectorAll('nav#toc a');
+            links.forEach(function(link) {
+                link.classList.remove('btn-active');
+            });
+    
+            // Show the clicked section
+            var sectionToShow = document.getElementById(sectionId);
+            sectionToShow.style.display = 'block';
+    
+            // Add the 'btn-active' class to the clicked link
+            var activeLink = document.getElementById(linkId);
+            activeLink.classList.add('btn-active');
+        }
+    
+        // Call showSection() with the ID of Section 1 when the page is loaded
+        window.onload = function() {
+            showSection('section1', 'link-section1');
+        };
+    </script>
+
+<script>
+    // Get the current year
+    var currentYear = new Date().getFullYear();
+
+    // Update the copyright text with the current year
+    document.getElementById("copyright").innerHTML = "© " + currentYear + " SecuritiesPesa. All rights reserved";
+</script>
+<script>
+    CKEDITOR.replace('id_description'); 
+</script>
+    
+    <script src="{% static 'main/js/jquery-3.6.0.min.js' %}"></script>
+    <script src="{% static 'main/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'main/js/jquery.magnific-popup.js' %}"></script>
+    <script src="{% static 'main/js/wow.min.js' %}"></script>
+    <script src="{% static 'main/js/jquery.nice-select.js' %}"></script>
+    <script src="{% static 'main/js/jquery.countdown.min.js' %}"></script>
+    <script src="{% static 'main/js/odometer.min.js' %}"></script>
+    <script src="{% static 'main/js/viewport.jquery.js' %}"></script>
+    <script src="{% static 'main/js/slick.min.js' %}"></script>
+    <script src="{% static 'main/js/main.js' %}"></script>
+</body>
+</html>

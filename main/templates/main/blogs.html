@@ -1,0 +1,70 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block content %}
+        <div class="blog-details-wrapper single-page-section-top-space single-page-section-bottom-space">
+            <section class="blog-details-section">
+                <div class="container custom-container-01">
+                    <div class="row">
+                        <div class="col-lg-8">
+                            <div class="blog-grid-item-02 style-02 blog-details">
+                                <h3 class="main-title">{{blog.name}}</h3>
+                                <div class="content">
+                                    <ul class="post-categories style-01">
+                                        <li>Created By : {{blog.created_by}}</li>
+                                        <li>Created at : {{blog.created_at}}</li>
+                                        
+                                    </ul>
+                                </div>
+                                <div class="thumbnail main">
+                                    <img src="{{blog.banner.url}}" alt="{{blog.name}}">
+                                </div>
+                            </div>
+                            <div class="blog-details-content">
+                                <p>{{blog.description|safe}}</p>
+                            </div>
+                            
+                            
+                            
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="widget-area style-01">
+                                <div class="widget widget_recent_posts">
+                                    <h4 class="widget-headline">Recent Post</h4>
+                                    <ul class="theme-recent-post-wrap">
+                                        {% if recent_blogs %}
+                                        {% for recent_blog in recent_blogs %}
+                                        <li class="theme-recent-post-item">
+                                           
+                                            <div class="content">
+                                                <span class="time">{{ recent_blong.created_at }}</span>
+                                                <h4 class="title"><a href="">{{recent_blog.name}}</a></h4>
+                                            </div>
+                                        </li>
+                                        {% endfor %}
+                                        {% else %}
+                                        <p>No Blogs Created</p>
+                                        {% endif %}
+    
+                                    </ul>
+                                </div>
+                                <div class="widget widget_category">
+                                    <h3 class="widget-headline">category</h3>
+                                    <ul>
+                                       {% if categories %}
+                                      {% for category in categories %}
+                                      <li><a href="#">{{category.name}}<span>({{category.num_blogs}})</span></a></li>
+                                      {% endfor %}
+                                       {% endif %}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+            Blog Grid Secction End Here
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+        </div>
+{% endblock content %}
