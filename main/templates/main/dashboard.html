@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block content %}
-<div class="container custom-container-01">
+<div class="container custom-container-01 " style="margin-bottom: 300px;">
     <div class="row">
         <div class="col-lg-3 justify-content-start">
             <div class="checkout-wrap">
@@ -11,25 +11,6 @@
                         <li class="nav-item">
                             <a href="#section1" onclick="showSection('section1')" class="btn-common">My Consultations</a>
                         </li>
-                        <li>
-                            <a href="#section2" onclick="showSection('section2')" class="btn-common mt-2">Specialities</a>
-                        </li>
-                        <li>
-                            <a href="#section3" onclick="showSection('section3')" class="btn-common mt-2">Financial Concerns</a>
-                        </li>
-                        <li>
-                            <a href="#section4" onclick="showSection('section4')" class="btn-common mt-2">About SPesa</a>
-                        </li>
-                        <li>
-                            <a href="#section5" onclick="showSection('section5')" class="btn-common mt-2">Panel</a>
-                        </li>
-                        <li>
-                            <a href="#section6" onclick="showSection('section6')" class="btn-common mt-2">How it Works</a>
-                        </li>
-                        <li>
-                            <a href="#blog" onclick="showSection('blog')" class="btn-common mt-2">Blogs</a>
-                        </li>
-                        <!-- Add more links for other sections -->
                     </ul>
                 </nav>
             </div>
@@ -39,358 +20,41 @@
             <div class="dtails-wrap">
                 <div id="content">
                     <div id="section1" style="display: block;">
-                        <h2 class="title">Registered Users</h2>
+                        <h2 class="title">My Consultations</h2>
                         <hr>
-                        {% if users %}
-                       <div class="table-responsive">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th scope="col">#</th>
-                                    <th scope="col">Name</th>
-                                    <th scope="col">Email</th>
-                                    <th scope="col">Phone</th>
-                                    <th scope="col">Region</th>
-                                    <th scope="col">Country</th>
-                                    <th scope="col">DOB</th>
-                                    <th scope="col">CertS</th>
-                                    <th scope="col">ISIFA No.</th>
-                                    <th scope="col">lvl</th>
-                                    <th scope="col">Req Date</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for user in users %}
-                                    <tr>
-                                        <th scope="row">{{ forloop.counter }}</th>
-                                        <td>{{ user.first_name }} {{ user.last_name }}</td>
-                                        <td>{{ user.email }}</td>
-                                        <td>{{ user.phone }}</td>
-                                        <td>{{ user.region }}</td>
-                                        <td>{{ user.country }}</td>
-                                        <td>{{ user.date_of_birth }}</td>
-                                        <td>{{ user.certifications }}</td>
-                                        <td>{{ user.isifa_number }}</td>
-                                        <td>{{ user.get_access_level_display }}</td>
-                                        <td>{{ user.date_created }}</td>
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                       </div>
-                    {% else %}
-                        <h2>No Registered Users</h2>
-                    {% endif %}
-                    
-                    </div>
-            
-                    <div id="section2" style="display: none;">
-                        <div class="row">
-                            <div class="col">
-                                <h2 class="title">Specialities</h2>
-                            </div>
-                            <div class="col text-right">
-                                <a href="{% url 'adminstration:create_speciality' %}" class="btn btn-primary">Add Speciality</a>
-                            </div>
-                        </div>
-                        
-                        <hr>
-                        {% if specialities %}
-                        <div class="table-responsive">
+                        {% if user_consults %}
+                           <div class="table-responsive">
                             <table class="table">
                                 <thead>
                                     <tr>
                                         <th scope="col">#</th>
-                                        <th scope="col">Name</th>
-                                        <th scope="col">Icon</th>
-                                        <th scope="col">Price</th>
-                                        <th scope="col">Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for speciality in specialities %}
-                                        <tr>
-                                            <th scope="row">{{ forloop.counter }}</th>
-                                            <td>{{ speciality.name }}</td>
-                                            <td><img src="{{ speciality.icon.url }}" alt="{{ speciality.name }} icon" class="img-thumbnail"></td>
-                                            <td>Ksh. {{ speciality.price }}</td>
-                                            <td>
-                                                <a href="{% url 'adminstration:edit_speciality' speciality.id %}" class="btn btn-sm btn-danger">
-                                                    <i class="fas fa-edit"></i> 
-                                                </a>
-                                            <a href="{% url 'adminstration:delete_speciality' speciality.id %}" class="btn-sm btn-danger">
-                                                <i class="fas fa-trash-alt"></i> 
-                                            </a>
-                                            </td>
-                                        </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
-                    {% else %}
-                        <h2>No Specialities Found</h2>
-                    {% endif %}
-
-                    
-                    
-                    </div>
-            
-                    <div id="section3" style="display: none;">
-                        <div class="row">
-                            <div class="col">
-                                <h2 class="title">Financial Concerns</h2>
-                            </div>
-                            <div class="col text-right">
-                                <a href="{% url 'adminstration:create_financial_concern' %}" class="btn btn-primary">Add Financial Concern</a>
-                            </div>
-                        </div>
-                        <hr>
-                        {% if f_concerns %}
-                        <div class="table-responsive">
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">#</th>
-                                        <th scope="col">Name</th>
-                                        <th scope="col">Price</th>
-                                        <th scope="col">Banner</th>
-                                        <th scope="col">Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for concern in f_concerns %}
-                                        <tr>
-                                            <th scope="row">{{ forloop.counter }}</th>
-                                            <td>{{ concern.name }}</td>
-                                            <td>Ksh. {{ concern.price }}</td>
-                                            <td>
-                                                {% if concern.banner %}
-                                                    <img src="{{ concern.banner.url }}" alt="{{ concern.name }} Banner" width="50" height="30" class="img-thumbnail">
-                                                {% else %}
-                                                    No banner available
-                                                {% endif %}
-                                            </td>
-                                            <td>
-                                                <a href="{% url 'adminstration:edit_financial_concern' concern.id %}" class="btn btn-sm btn-danger">
-                                                    <i class="fas fa-edit"></i> 
-                                                </a>
-                                                <a href="{% url 'adminstration:delete_financial_concern' concern.id %}" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete {{ concern.name }}?');">
-                                                    <i class="fas fa-trash-alt"></i> 
-                                                </a>
-                                            </td>
-                                        </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
-                    {% else %}
-                        <h2>No Financial Concerns Found</h2>
-                    {% endif %}
-                    
-                    
-                    </div>
-                    <div id="section4" style="display: none;">
-                        <div class="row">
-                            <div class="col">
-                                <h2 class="title">About SecuritiesPesa</h2>
-                            </div>
-                            <div class="col text-right">
-                                <a href="{% url 'adminstration:create_about' %}" class="btn btn-primary">Add About Spesa</a>
-                            </div>
-                        </div>
-                        <hr>
-                        {% if abouts %}
-                        <div class="table-responsive">
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">#</th>
-                                        <th scope="col">Name</th>
+                                        <th scope="col">Category</th>
                                         <th scope="col">Description</th>
-                                        <th scope="col">Icon</th>
-                                        <th scope="col">Actions</th>
+                                        <th scope="col">Price</th>
+                                        <th scope="col">Transaction Code</th>
+                                        <th scope="col">Assigned</th>
+                                        <th scope="col">Payment Confirmation</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {% for about in abouts %}
+                                    {% for consult in user_consults %}
                                         <tr>
                                             <th scope="row">{{ forloop.counter }}</th>
-                                            <td>{{ about.name }}</td>
-                                            <td>{{ about.description }}</td>
-                                            <td>
-                                                {% if about.icon %}
-                                                    <img src="{{ about.icon.url }}" alt="{{ about.name }} Icon" width="50" height="30" class="img-thumbnail">
-                                                {% else %}
-                                                    No icon available
-                                                {% endif %}
-                                            </td>
-                                            <td>
-                                                <a href="{% url 'adminstration:edit_about' about.id %}" class="btn btn-sm btn-danger mr-2">
-                                                    <i class="fas fa-edit"></i>
-                                                </a>
-                                                <a href="{% url 'adminstration:delete_about' about.id %}" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete {{ about.name }}?');">
-                                                    <i class="fas fa-trash-alt"></i>
-                                                </a>
-                                            </td>
+                                            <td>{{ consult.category }}</td>
+                                            <td>{{ consult.description|safe }}</td>
+                                            <td>{{ consult.price }}</td>
+                                            <td>{{ consult.transaction_code }}</td>
+                                            <td>{{ consult.get_status_display }}</td>
+                                            <td>{{ consult.get_payment_confirmation_display }}</td>
                                         </tr>
                                     {% endfor %}
                                 </tbody>
                             </table>
-                        </div>
-                    {% else %}
-                        <h2>No About Instances Found</h2>
-                    {% endif %}
-                    
-                    
-                    </div>
-                    <div id="section5" style="display: none;">
-                        <div class="row">
-                            <div class="col">
-                                <h2 class="title">Advisory Panel</h2>
-                            </div>
-                            <div class="col text-right">
-                                <a href="{% url 'adminstration:create_panel' %}" class="btn btn-primary">Create Panel</a>
-                            </div>
-                        </div>
-                        <hr>
-                        {% if panel %}
-                    <div class="table-responsive">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th scope="col">#</th>
-                                    <th scope="col">Name</th>
-                                    <th scope="col">Description</th>
-                                    <th scope="col">Image</th>
-                                    <th scope="col">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                {% for panel_instance in panel %}
-                    <tr>
-                        <th scope="row">{{ forloop.counter }}</th>
-                        <td>{{ panel_instance.name }}</td>
-                        <td>{{ panel_instance.description }}</td>
-                        <td>
-                            {% if panel_instance.image %}
-                                <img src="{{ panel_instance.image.url }}" alt="{{ panel_instance.name }} Icon" width="50" height="30" class="img-thumbnail">
-                            {% else %}
-                                No icon available
-                            {% endif %}
-                        </td>
-                        <td>
-                            <a href="{% url 'adminstration:edit_panel' panel_instance.id %}" class="btn btn-sm btn-danger mr-2">
-                                <i class="fas fa-edit"></i>
-                            </a>
-                            <a href="{% url 'adminstration:delete_panel' panel_instance.id %}" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete {{ panel_instance.name }}?');">
-                                <i class="fas fa-trash-alt"></i>
-                            </a>
-                        </td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-{% else %}
-    <h2>No Panel Instances Found</h2>
-{% endif %}
-
-                    
-                    </div>
-                    <div id="section6" style="display: none;">
-                        <div class="row">
-                            <div class="col">
-                                <h2 class="title">How it Works</h2>
-                            </div>
-                            <div class="col text-right">
-                                <a href="{% url 'adminstration:create_works' %}" class="btn btn-primary">Add How it works</a>
-                            </div>
-                        </div>
-                        <hr>
-                        {% if works %}
-    <div class="table-responsive">
-        <table class="table">
-            <thead>
-                <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">Question</th>
-                    <th scope="col">Answer</th>
-                    <th scope="col">Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for work in works %}
-                    <tr>
-                        <th scope="row">{{ forloop.counter }}</th>
-                        <td>{{ work.question }}</td>
-                        <td>{{ work.answer }}</td>
-                        <td>
-                            <a href="{% url 'adminstration:edit_works' work.id %}" class="btn btn-sm btn-danger mr-2">
-                                <i class="fas fa-edit"></i>
-                            </a>
-                            <a href="{% url 'adminstration:delete_works' work.id %}" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete {{ work.question }}?');">
-                                <i class="fas fa-trash-alt"></i>
-                            </a>
-                        </td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-{% else %}
-    <h2>No How it Works Instances Found</h2>
-{% endif %}
-
-                    
-                    
-                    </div>
-                    <div id="blog" style="display: none;">
-                        <div class="row">
-                            <div class="col">
-                                <h2 class="title">Blog Category</h2>
-                            </div>
-                            <div class="col text-right">
-                                <a href="{% url 'adminstration:create_category' %}" class="btn btn-primary">Manage Blog</a>
-                            </div>
-                        </div>
-                        <hr>
-                        {% if categories %}
-                        <div class="widget widget_category">
-                            <h3 class="widget-headline">Categories</h3>
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th>Name</th>
-                                        <th>No</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for category in categories %}
-                                    <tr>
-                                        <td><a href="{% url 'adminstration:category_detail' category.id %}">{{ category.name }}</a></td>
-                                        <td>{{ category.num_blogs }}</td>
-                                        <td>
-                                            <a href="{% url 'adminstration:edit_category' category.id %}" class="btn btn-sm btn-primary">
-                                                <i class="fas fa-edit"></i>
-                                            </a>
-                                            <a href="{% url 'adminstration:delete_category' category.id %}" class="btn btn-sm btn-primary">
-                                                <i class="fas fa-trash-alt"></i>
-                                            </a>
-                                           
-                                        </td>
-                                    </tr>
-                                    {% endfor %}
-
-                                </tbody>
-                            </table>
-                        </div>
+                           </div>
                         {% else %}
-                        <h2>No Blog Categories Found</h2>
+                            <h2>No Consultations Found</h2>
                         {% endif %}
-                        
                     </div>
-                    
                 </div>
             </div>
         </div>

@@ -11,5 +11,6 @@ urlpatterns = [
     path("consultant/", views.consultant, name="consultant"),
     path('consult/<int:speciality_id>/',
          views.create_consult, name='consult'),
+    path('fconsult/<int:concern_id>/', views.create_f_consult, name='fconsult'),
 
 ]

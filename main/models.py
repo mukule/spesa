@@ -87,12 +87,22 @@ class Consult(models.Model):
     category = models.CharField(max_length=100)
     description = models.TextField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
+    transaction_code = models.CharField(
+        max_length=100, blank=True, null=True)
 
     STATUS_CHOICES = [
-        ('Pending', 'Pending'),
-        ('Assigned', 'Assigned'),
+        (0, 'Pending'),
+        (1, 'Assigned'),
     ]
-    status = models.CharField(max_length=100, choices=STATUS_CHOICES)
+
+    status = models.IntegerField(choices=STATUS_CHOICES, default=0)
+
+    PAYMENT_CONFIRMATION_CHOICES = [
+        (0, 'Pending'),
+        (1, 'Confirmed'),
+    ]
+    payment_confirmation = models.CharField(
+        max_length=10, choices=PAYMENT_CONFIRMATION_CHOICES, default='Pending')
 
     def __str__(self):
         return f"{self.user.username}'s {self.category} Consult"

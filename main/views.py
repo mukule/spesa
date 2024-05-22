@@ -1,3 +1,5 @@
+from django.contrib import messages
+from .invoice import *
 from django.http import HttpResponseServerError
 import base64
 from .models import Blog, Category
@@ -45,7 +47,9 @@ def blogs(request):
 
 @login_required
 def dashboard(request):
-    return render(request, 'main/dashboard.html')
+    user_consults = Consult.objects.filter(user=request.user)
+
+    return render(request, 'main/dashboard.html', {'user_consults': user_consults})
 
 
 @login_required
@@ -61,16 +65,84 @@ def create_consult(request, speciality_id):
         form = ConsultForm(request.POST)
         if form.is_valid():
             consult = form.save(commit=False)
-            consult.user = request.user
+            consult.user = request.user  # Assigning the logged-in user to the consult
             consult.category = speciality.name
             consult.price = speciality.price
-            # Pass the request object here
-            response = initiate_payment(request)
-            if response == "success":
-                consult.save()
-                return HttpResponse("Payment initiated successfully. Consult created.")
+            consult.save()
+
+            # Generate and send the invoice
+            invoice_sent = send_invoice_email(
+                request.user,
+                speciality,
+                consult.transaction_code,
+                speciality.price,
+                consult.description,
+                consult.payment_confirmation
+            )
+
+            if invoice_sent:
+                # Success message
+                messages.success(
+                    request, 'Consultation created successfully. Invoice sent to Your Email.')
+
             else:
-                return HttpResponseServerError("Failed to initiate payment. Consult not created.")
+                # Error message if invoice sending failed
+                messages.error(
+                    request, 'Failed to send invoice. Please contact support.')
+
+            # Redirect back to the same page after creating consultation
+            return redirect(request.path)
+        else:
+            # Error message if form is invalid
+            messages.error(
+                request, 'Failed to create consultation. Please check the form.')
+
+    else:
+        form = ConsultForm()
+
+    return render(request, 'main/create_consult.html', {'form': form, 'speciality': speciality})
+
+
+@login_required
+def create_f_consult(request, concern_id):
+    speciality = get_object_or_404(FinancialConcern, pk=concern_id)
+
+    if request.method == 'POST':
+        form = ConsultForm(request.POST)
+        if form.is_valid():
+            consult = form.save(commit=False)
+            consult.user = request.user  # Assigning the logged-in user to the consult
+            consult.category = speciality.name
+            consult.price = speciality.price
+            consult.save()
+
+            # Generate and send the invoice
+            invoice_sent = send_invoice_email(
+                request.user,
+                speciality,
+                consult.transaction_code,
+                speciality.price,
+                consult.description,
+                consult.payment_confirmation
+            )
+
+            if invoice_sent:
+                # Success message
+                messages.success(
+                    request, 'Consultation created successfully. Invoice sent to Your Email.')
+
+            else:
+                # Error message if invoice sending failed
+                messages.error(
+                    request, 'Failed to send invoice. Please contact support.')
+
+            # Redirect back to the same page after creating consultation
+            return redirect(request.path)
+        else:
+            # Error message if form is invalid
+            messages.error(
+                request, 'Failed to create consultation. Please check the form.')
+
     else:
         form = ConsultForm()
 

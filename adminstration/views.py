@@ -7,6 +7,7 @@ from .forms import *
 from django.db.models import Count
 from django.http import Http404
 from django.utils import timezone
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 # Create your views here.
 
@@ -20,6 +21,23 @@ def dashboard(request):
     panel = Panel.objects.all()
     works = Works.objects.all()
     categories = Category.objects.annotate(num_blogs=Count('blog'))
+
+    # Retrieve all consults and order them by id in descending order
+    consults = Consult.objects.all().order_by('-id')
+
+    # Paginate the consults to display 10 per page
+    paginator = Paginator(consults, 10)
+
+    page_number = request.GET.get('page')
+    try:
+        consults = paginator.page(page_number)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        consults = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        consults = paginator.page(paginator.num_pages)
+
     context = {
         'users': users,
         'specialities': specialities,
@@ -27,7 +45,8 @@ def dashboard(request):
         'abouts': abouts,
         'panel': panel,
         'works': works,
-        'categories': categories
+        'categories': categories,
+        'consults': consults
     }
     return render(request, 'adminstration/dashboard.html', context)
 

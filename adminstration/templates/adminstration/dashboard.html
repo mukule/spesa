@@ -12,23 +12,27 @@
                             <a href="#section1" onclick="showSection('section1')" class="btn-common">Registrants</a>
                         </li>
                         <li>
-                            <a href="#section2" onclick="showSection('section2')" class="btn-common mt-2">Specialities</a>
+                            <a href="#section2" onclick="showSection('section2')" class="btn-common mt-1">Specialities</a>
                         </li>
                         <li>
-                            <a href="#section3" onclick="showSection('section3')" class="btn-common mt-2">Financial Concerns</a>
+                            <a href="#section3" onclick="showSection('section3')" class="btn-common mt-1">Financial Concerns</a>
                         </li>
                         <li>
                             <a href="#section4" onclick="showSection('section4')" class="btn-common mt-2">About SPesa</a>
                         </li>
                         <li>
-                            <a href="#section5" onclick="showSection('section5')" class="btn-common mt-2">Panel</a>
+                            <a href="#section5" onclick="showSection('section5')" class="btn-common mt-1">Panel</a>
                         </li>
                         <li>
-                            <a href="#section6" onclick="showSection('section6')" class="btn-common mt-2">How it Works</a>
+                            <a href="#section6" onclick="showSection('section6')" class="btn-common mt-1">How it Works</a>
                         </li>
                         <li>
-                            <a href="#blog" onclick="showSection('blog')" class="btn-common mt-2">Blogs</a>
+                            <a href="#blog" onclick="showSection('blog')" class="btn-common mt-1">Blogs</a>
                         </li>
+                        <li>
+                            <a href="#consults" onclick="showSection('consults')" class="btn-common mt-1">Requests</a>
+                        </li>
+                        
                         <!-- Add more links for other sections -->
                     </ul>
                 </nav>
@@ -38,6 +42,99 @@
         <div class="col-lg-9">
             <div class="dtails-wrap">
                 <div id="content">
+                    
+                    <div id="consults" style="display: none;">
+                        <div class="row">
+                        
+                                <h2 class="title">Consultation Requests</h2>
+                            
+                        </div>
+                        <hr>
+                        {% if consults %}
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">Concern</th>
+                                        <th scope="col">Description</th>
+                                        <th scope="col">Amount</th>
+                                        <th scope="col">Code</th>
+                                        <th scope="col">Assign</th>
+                                        <th scope="col">Payment</th>
+                                        <th scope="col">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for consult in consults %}
+                                        <tr>
+                                            <th scope="row">{{ forloop.counter }}</th>
+                                            <td>{{ consult.category }}</td>
+                                            <td>{{ consult.description|safe }}</td>
+                                            <td>{{ consult.price }}</td>
+                                            <td>{{ consult.transaction_code }}</td>
+                                            <td>{{ consult.get_status_display }}</td>
+                                            <td>{{ consult.get_payment_confirmation_display }}</td>
+                                            <td>
+                                                <div class="btn-group" role="group">
+                                                    <a href="" class="btn btn-sm btn-primary">Assign</a>
+                                                    <a href="" class="btn btn-sm btn-success">Payment</a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <!-- Pagination links -->
+                        <nav aria-label="Consults Pagination">
+                            <ul class="pagination justify-content-center">
+                                {% if consults.has_previous %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page=1" aria-label="First">
+                                            <span aria-hidden="true">&laquo;</span>
+                                            <span class="sr-only">First</span>
+                                        </a>
+                                    </li>
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ consults.previous_page_number }}" aria-label="Previous">
+                                            <span aria-hidden="true">&lt;</span>
+                                            <span class="sr-only">Previous</span>
+                                        </a>
+                                    </li>
+                                {% endif %}
+                                
+                                {% for num in consults.paginator.page_range %}
+                                    <li class="page-item{% if num == consults.number %} active{% endif %}">
+                                        <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                                    </li>
+                                {% endfor %}
+                                
+                                {% if consults.has_next %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ consults.next_page_number }}" aria-label="Next">
+                                            <span aria-hidden="true">&gt;</span>
+                                            <span class="sr-only">Next</span>
+                                        </a>
+                                    </li>
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ consults.paginator.num_pages }}" aria-label="Last">
+                                            <span aria-hidden="true">&raquo;</span>
+                                            <span class="sr-only">Last</span>
+                                        </a>
+                                    </li>
+                                {% endif %}
+                            </ul>
+                        </nav>
+                        
+                    {% else %}
+                        <h2>No Consultations Found</h2>
+                    {% endif %}
+                    
+                    
+                    
+                    </div>
                     <div id="section1" style="display: block;">
                         <h2 class="title">Registered Users</h2>
                         <hr>

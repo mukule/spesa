@@ -134,6 +134,17 @@ MEDIA_URL = '/media/'
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
+
+# Email settins
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'pop.kenyaweb.com'
+EMAIL_FROM = 'nelson@kenyaweb.co.ke'
+EMAIL_HOST_USER = 'nelson@kenyaweb.co.ke'
+EMAIL_HOST_PASSWORD = ''
+EMAIL_PORT = 465
+EMAIL_USE_SSL = True
+DEFAULT_FROM_EMAIL = 'nelson@kenyaweb.co.ke'
+
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 AUTH_USER_MODEL = 'users.CustomUser'
