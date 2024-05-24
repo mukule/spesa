@@ -280,7 +280,7 @@ def initiate_stk_push(amount, phone, category):
         "PartyA": phone,
         "PartyB": 174379,
         "PhoneNumber": phone,
-        "CallBackURL": "http://soft05.kenyaweb.com/mpesa_callback",
+        "CallBackURL": "https://soft05.kenyaweb.com/mpesa_callback",
         "AccountReference": "SecuritiesPesa",
         "TransactionDesc": category,
     }
