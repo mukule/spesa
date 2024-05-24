@@ -1,3 +1,8 @@
+from django.urls import reverse
+from django.views.decorators.csrf import csrf_exempt
+from django.http import JsonResponse
+import json
+import os
 from django.contrib import messages
 from .invoice import *
 from django.http import HttpResponseServerError
@@ -8,13 +13,10 @@ from django.contrib.auth.decorators import login_required
 from main.models import *
 from django.db.models import Count
 from .forms import *
-from securitiespesa.settings import consumer_key, consumer_secret
+from securitiespesa.settings import consumer_key, consumer_secret, pass_key
 import requests
-from base64 import b64encode
-import datetime
-timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
+from datetime import datetime
 shortcode = 174379
-# Create your views here.
 
 
 def index(request):
@@ -103,6 +105,25 @@ def create_consult(request, speciality_id):
     return render(request, 'main/create_consult.html', {'form': form, 'speciality': speciality})
 
 
+def format_phone_number(phone):
+    """
+    Convert phone number to the required format for M-PESA API.
+    Assumes the phone number is in national format.
+    """
+    # Remove any non-digit characters
+    phone = ''.join(filter(str.isdigit, phone))
+
+    # Check if the number starts with a leading zero
+    if phone.startswith('0'):
+        # Remove the leading zero
+        phone = phone[1:]
+
+    # Add the country code
+    phone = '254' + phone
+
+    return phone
+
+
 @login_required
 def create_f_consult(request, concern_id):
     speciality = get_object_or_404(FinancialConcern, pk=concern_id)
@@ -111,7 +132,7 @@ def create_f_consult(request, concern_id):
         form = ConsultForm(request.POST)
         if form.is_valid():
             consult = form.save(commit=False)
-            consult.user = request.user  # Assigning the logged-in user to the consult
+            consult.user = request.user
             consult.category = speciality.name
             consult.price = speciality.price
             consult.save()
@@ -129,7 +150,19 @@ def create_f_consult(request, concern_id):
             if invoice_sent:
                 # Success message
                 messages.success(
-                    request, 'Consultation created successfully. Invoice sent to Your Email.')
+                    request, 'Consultation created successfully. Invoice sent to your email.')
+
+                try:
+                    phone = request.user.phone
+                    user_phone = format_phone_number(phone)
+                    print(user_phone)
+                    payment_response = initiate_stk_push(
+                        consult.price, user_phone, consult.category)
+                    messages.success(
+                        request, 'Payment initiated successfully. Please complete the payment on your phone.')
+                except Exception as e:
+                    messages.error(
+                        request, f'Failed to initiate payment: {str(e)}')
 
             else:
                 # Error message if invoice sending failed
@@ -149,70 +182,119 @@ def create_f_consult(request, concern_id):
     return render(request, 'main/create_consult.html', {'form': form, 'speciality': speciality})
 
 
-def initiate_payment(request):
+@csrf_exempt
+def mpesa_callback(request):
+    print("yes")
     if request.method == 'POST':
-        # Get form data
-        amount = request.POST.get('amount')
-        phone_number = request.POST.get('phone_number')
+        try:
+            # Parse the incoming JSON request
+            data = json.loads(request.body.decode('utf-8'))
 
-        # Get an OAuth access token
-        url = "https://sandbox.safaricom.co.ke/oauth/v1/generate"
-        querystring = {"grant_type": "client_credentials"}
+            # Extract relevant data
+            body = data.get('Body', {})
+            stk_callback = body.get('stkCallback', {})
+            result_code = stk_callback.get('ResultCode')
+            result_desc = stk_callback.get('ResultDesc')
+            merchant_request_id = stk_callback.get('MerchantRequestID')
+            checkout_request_id = stk_callback.get('CheckoutRequestID')
+            callback_metadata = stk_callback.get(
+                'CallbackMetadata', {}).get('Item', [])
 
-        credentials = f"{consumer_key}:{consumer_secret}"
-        credentials_b64 = base64.b64encode(
-            credentials.encode("ascii")).decode("ascii")
+            # Extract amount and phone number from callback metadata
+            amount = None
+            phone_number = None
+            for item in callback_metadata:
+                if item['Name'] == 'Amount':
+                    amount = item['Value']
+                elif item['Name'] == 'PhoneNumber':
+                    phone_number = item['Value']
 
-        headers = {"Authorization": f"Basic {credentials_b64}"}
+            # Update the Consultation object
+            consultation = Consult.objects.get(
+                transaction_code=merchant_request_id)
+            if result_code == 0:
+                # Successful transaction
+                consultation.payment_confirmation = True
+                return redirect('main:success')
 
-        response = requests.request(
-            "GET", url, headers=headers, params=querystring)
-
-        response_json = response.json()
-        access_token = response_json["access_token"]
-        print(access_token)
-        host = request.get_host()
-
-        callback_url = 'http://soft01.kenyaweb.com:8081/tenders/payment_push'
-
-        # Make M-Pesa payment request
-        passkey = "KgJI3c0EoSYCuVdxUTyjGOL7P11CsxksY+BSY7+mwFObvBWGYa6wD4+vIkoypvv5zsohcG5QhrGc9sKBhfATO+wxqAatmoqGM0LXEzDy0Lp02Go1QUD8nw/PUPDH3M72BoFquaPy5Z/FaGg/GuVV8HPZuWGyO8SMXIXiHVZqJ/X7ul0dWvYt14SwFBh1LuZRttiY3L5IVsQzOQSoj2ta31s0ZHMPGiVyPT2hMwDPoYe686i/HOSp9eOjFimjbBd7G2l2P5MN3QnzcMQndouNh2hrWoooqduE3Ake/fvKy2XdcOwu8I54t1OVjHm4W1Fno3+ur7iy95uwgwX+89lZZQ=="
-        password = base64.b64encode(
-            f"{shortcode}{passkey}{timestamp}".encode("ascii")).decode("ascii")
-
-        url = 'https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest'
-        headers = {
-            'Authorization': 'Bearer ' + access_token,
-            'Content-Type': 'application/json'
-        }
-
-        payload = {
-            'BusinessShortCode': shortcode,
-            'Password': password,
-            'Timestamp': timestamp,
-            'TransactionType': 'CustomerPayBillOnline',
-            'Amount': 1,
-            'PartyA': '0704122212',
-            'PartyB': 174379,
-            'PhoneNumber': '0704122212',
-            'CallBackURL': callback_url,
-            'AccountReference': 'conference',
-            'TransactionDesc': 'ticket',
-        }
-
-        response = requests.post(url, headers=headers, json=payload)
-
-        print(response)
-
-        # Check payment status and return appropriate response
-        if response.status_code == 200:
-            response_json = response.json()
-            print(response_json)
-            if response_json["ResponseCode"] == "0":
-                return "success"  # Payment initiation successful
             else:
-                return "failure"  # Payment initiation failed
-        else:
-            print(response)
-            return "failure"  # Payment initiation failed due to HTTP error
-    return render(request, 'main/tenders_detail.html')
+                # Failed transaction
+                consultation.payment_confirmation = False
+                return redirect('main:fail')
+
+            # Return a success response
+            return JsonResponse({"ResultCode": 0, "ResultDesc": "Accepted"})
+
+        except Consult.DoesNotExist:
+            # Handle the case where the transaction code does not match any Consultation
+            return JsonResponse({"ResultCode": 1, "ResultDesc": "Consultation not found"})
+
+        except Exception as e:
+            # Handle any other exceptions
+            return JsonResponse({"ResultCode": 1, "ResultDesc": str(e)})
+
+    # If request method is not POST
+    return JsonResponse({"ResultCode": 1, "ResultDesc": "Invalid request method"})
+
+
+def get_token():
+    api_url = 'https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials'
+    response = requests.get(api_url, auth=(consumer_key, consumer_secret))
+    if response.status_code == 200:
+        access_token = response.json()['access_token']
+        return access_token
+    else:
+        raise Exception('Failed to get access token')
+
+# Function to initiate M-PESA STK push
+
+
+def generate_password(business_short_code, passkey):
+    timestamp = datetime.now().strftime('%Y%m%d%H%M%S')
+    password_string = f"{business_short_code}{passkey}{timestamp}"
+    password = base64.b64encode(password_string.encode()).decode('utf-8')
+    return password
+
+
+def initiate_stk_push(amount, phone, category):
+    access_token = get_token()
+
+    business_short_code = '174379'
+    passkey = pass_key
+    timestamp = datetime.now().strftime('%Y%m%d%H%M%S')
+    print(timestamp)
+
+    password = generate_password(business_short_code, passkey)
+
+    api_url = 'https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest'
+    headers = {
+        'Authorization': f'Bearer {access_token}',
+        'Content-Type': 'application/json'
+    }
+    payload = {
+        "BusinessShortCode": business_short_code,
+        "Password": password,
+        "Timestamp": timestamp,
+        "TransactionType": "CustomerPayBillOnline",
+        "Amount": float(amount),
+        "PartyA": phone,
+        "PartyB": 174379,
+        "PhoneNumber": phone,
+        "CallBackURL": "http://soft05.kenyaweb.com/mpesa_callback",
+        "AccountReference": "SecuritiesPesa",
+        "TransactionDesc": category,
+    }
+    response = requests.post(api_url, json=payload, headers=headers)
+    if response.status_code == 200:
+        print(response)
+        return response.json()
+    else:
+        raise Exception(f'STK Push failed: {response.text}')
+
+
+def success(request):
+    return render(request, 'main/success.html')
+
+
+def fail(request):
+    return render(request, 'main/fail.html')

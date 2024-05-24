@@ -12,5 +12,8 @@ urlpatterns = [
     path('consult/<int:speciality_id>/',
          views.create_consult, name='consult'),
     path('fconsult/<int:concern_id>/', views.create_f_consult, name='fconsult'),
+    path('mpesa_callback/', views.mpesa_callback, name='mpesa_callback'),
+    path('success/', views.success, name='success'),
+    path('fail/', views.fail, name='fail'),
 
 ]
