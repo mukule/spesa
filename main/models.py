@@ -87,22 +87,12 @@ class Consult(models.Model):
     category = models.CharField(max_length=100)
     description = models.TextField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
-    transaction_code = models.CharField(
-        max_length=100, blank=True, null=True)
+    checkout_request_id = models.CharField(
+        max_length=100, null=True, blank=True)
+    transaction_code = models.CharField(max_length=100, null=True, blank=True)
 
-    STATUS_CHOICES = [
-        (0, 'Pending'),
-        (1, 'Assigned'),
-    ]
-
-    status = models.IntegerField(choices=STATUS_CHOICES, default=0)
-
-    PAYMENT_CONFIRMATION_CHOICES = [
-        (0, 'Pending'),
-        (1, 'Confirmed'),
-    ]
-    payment_confirmation = models.CharField(
-        max_length=10, choices=PAYMENT_CONFIRMATION_CHOICES, default='Pending')
+    assigned = models.BooleanField(default=False)
+    payment_confirmation = models.BooleanField(default=False)
 
     def __str__(self):
         return f"{self.user.username}'s {self.category} Consult"
@@ -117,3 +107,12 @@ class Payment(models.Model):
 
     def __str__(self):
         return f"Payment for {self.user.username} - {self.amount} for {self.package}"
+
+
+class TempConsultation(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    category_id = models.IntegerField()
+    amount = models.FloatField()
+    phone = models.CharField(max_length=15)
+    checkout_request_id = models.CharField(max_length=100)
+    timestamp = models.DateTimeField(auto_now_add=True)

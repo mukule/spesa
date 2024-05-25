@@ -1,3 +1,4 @@
+import time
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
@@ -49,7 +50,8 @@ def blogs(request):
 
 @login_required
 def dashboard(request):
-    user_consults = Consult.objects.filter(user=request.user)
+    user_consults = Consult.objects.filter(
+        user=request.user).order_by('-id')[:5]
 
     return render(request, 'main/dashboard.html', {'user_consults': user_consults})
 
@@ -67,7 +69,7 @@ def create_consult(request, speciality_id):
         form = ConsultForm(request.POST)
         if form.is_valid():
             consult = form.save(commit=False)
-            consult.user = request.user  # Assigning the logged-in user to the consult
+            consult.user = request.user
             consult.category = speciality.name
             consult.price = speciality.price
             consult.save()
@@ -135,9 +137,9 @@ def create_f_consult(request, concern_id):
             consult.user = request.user
             consult.category = speciality.name
             consult.price = speciality.price
+            consult.payment_confirmation = False  # Pending
             consult.save()
 
-            # Generate and send the invoice
             invoice_sent = send_invoice_email(
                 request.user,
                 speciality,
@@ -148,18 +150,33 @@ def create_f_consult(request, concern_id):
             )
 
             if invoice_sent:
-                # Success message
                 messages.success(
                     request, 'Consultation created successfully. Invoice sent to your email.')
 
                 try:
                     phone = request.user.phone
                     user_phone = format_phone_number(phone)
-                    print(user_phone)
                     payment_response = initiate_stk_push(
                         consult.price, user_phone, consult.category)
+
+                    # Save the checkout request ID
+                    consult.checkout_request_id = payment_response.get(
+                        'CheckoutRequestID')
+                    consult.save()
+
                     messages.success(
                         request, 'Payment initiated successfully. Please complete the payment on your phone.')
+
+                    # Check payment status
+                    payment_confirmed = check_payment_status(
+                        consult.checkout_request_id)
+                    if payment_confirmed:
+                        messages.success(
+                            request, 'Payment confirmed successfully.')
+                    else:
+                        messages.error(
+                            request, 'Payment confirmation timed out or failed.')
+
                 except Exception as e:
                     messages.error(
                         request, f'Failed to initiate payment: {str(e)}')
@@ -169,8 +186,9 @@ def create_f_consult(request, concern_id):
                 messages.error(
                     request, 'Failed to send invoice. Please contact support.')
 
-            # Redirect back to the same page after creating consultation
-            return redirect(request.path)
+            # Redirect to main dashboard in all cases
+            return redirect('main:dashboard')
+
         else:
             # Error message if form is invalid
             messages.error(
@@ -182,9 +200,28 @@ def create_f_consult(request, concern_id):
     return render(request, 'main/create_consult.html', {'form': form, 'speciality': speciality})
 
 
+def check_payment_status(checkout_request_id):
+    timeout = 35  # seconds
+    interval = 2  # seconds
+    elapsed_time = 0
+
+    while elapsed_time < timeout:
+        try:
+            consult = Consult.objects.get(
+                checkout_request_id=checkout_request_id)
+            if consult.payment_confirmation:
+                return True
+            else:
+                time.sleep(interval)
+                elapsed_time += interval
+        except Consult.DoesNotExist:
+            return False
+
+    return False
+
+
 @csrf_exempt
 def mpesa_callback(request):
-    print("yes")
     if request.method == 'POST':
         try:
             # Parse the incoming JSON request
@@ -211,19 +248,18 @@ def mpesa_callback(request):
 
             # Update the Consultation object
             consultation = Consult.objects.get(
-                transaction_code=merchant_request_id)
+                checkout_request_id=checkout_request_id)
             if result_code == 0:
                 # Successful transaction
                 consultation.payment_confirmation = True
-                return redirect('main:success')
-
+                consultation.transaction_code = merchant_request_id
+                consultation.save()
+                return JsonResponse({"ResultCode": 0, "ResultDesc": "Accepted"})
             else:
                 # Failed transaction
                 consultation.payment_confirmation = False
-                return redirect('main:fail')
-
-            # Return a success response
-            return JsonResponse({"ResultCode": 0, "ResultDesc": "Accepted"})
+                consultation.save()
+                return JsonResponse({"ResultCode": 0, "ResultDesc": "Accepted"})
 
         except Consult.DoesNotExist:
             # Handle the case where the transaction code does not match any Consultation

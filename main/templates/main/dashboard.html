@@ -29,11 +29,10 @@
                                     <tr>
                                         <th scope="col">#</th>
                                         <th scope="col">Category</th>
-                                        <th scope="col">Description</th>
                                         <th scope="col">Price</th>
                                         <th scope="col">Transaction Code</th>
+                                        <th scope="col">Payment</th>
                                         <th scope="col">Assigned</th>
-                                        <th scope="col">Payment Confirmation</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -41,11 +40,25 @@
                                         <tr>
                                             <th scope="row">{{ forloop.counter }}</th>
                                             <td>{{ consult.category }}</td>
-                                            <td>{{ consult.description|safe }}</td>
                                             <td>{{ consult.price }}</td>
-                                            <td>{{ consult.transaction_code }}</td>
-                                            <td>{{ consult.get_status_display }}</td>
-                                            <td>{{ consult.get_payment_confirmation_display }}</td>
+                                            <td>{% if consult.transaction_code %}
+                                                {{consult.transaction_code}}
+                                                {% else %}
+                                                No Paid
+                                                {%endif%}
+                                            </td>
+                                            <td>{% if consult.payment_confirmation %}
+                                                Paid
+                                                {% else %}
+                                                Pending
+                                                {% endif %}
+                                            </td>
+                                            <td>{% if consult.assigned  %}
+                                                Assigned
+                                                {% else %}
+                                                Pending
+                                                {% endif%}
+                                            </td>
                                         </tr>
                                     {% endfor %}
                                 </tbody>
