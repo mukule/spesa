@@ -33,6 +33,7 @@
                                         <th scope="col">Transaction Code</th>
                                         <th scope="col">Payment</th>
                                         <th scope="col">Assigned</th>
+                                        <th>id</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -59,6 +60,7 @@
                                                 Pending
                                                 {% endif%}
                                             </td>
+                                            <td>{{consult.checkout_request_id}}</td>
                                         </tr>
                                     {% endfor %}
                                 </tbody>

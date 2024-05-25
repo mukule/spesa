@@ -221,56 +221,62 @@ def check_payment_status(checkout_request_id):
 
 
 @csrf_exempt
+@csrf_exempt
 def mpesa_callback(request):
     if request.method == 'POST':
         try:
-            # Parse the incoming JSON request
-            data = json.loads(request.body.decode('utf-8'))
+            callback_data = json.loads(request.body.decode('utf-8'))
 
-            # Extract relevant data
-            body = data.get('Body', {})
-            stk_callback = body.get('stkCallback', {})
-            result_code = stk_callback.get('ResultCode')
-            result_desc = stk_callback.get('ResultDesc')
-            merchant_request_id = stk_callback.get('MerchantRequestID')
-            checkout_request_id = stk_callback.get('CheckoutRequestID')
-            callback_metadata = stk_callback.get(
-                'CallbackMetadata', {}).get('Item', [])
+            # Check the result code
+            result_code = callback_data['Body']['stkCallback']['ResultCode']
+            checkout_request_id = callback_data['Body']['stkCallback']['CheckoutRequestID']
+            if result_code != 0:
+                # If the result code is not 0, there was an error
+                error_message = callback_data['Body']['stkCallback']['ResultDesc']
+                response_data = {'ResultCode': result_code,
+                                 'ResultDesc': error_message}
 
-            # Extract amount and phone number from callback metadata
+                # Update the Consult instance to indicate a failed transaction
+                try:
+                    consultation = Consult.objects.get(
+                        checkout_request_id=checkout_request_id)
+                    consultation.payment_confirmation = False
+                    consultation.save()
+                except Consult.DoesNotExist:
+                    pass  # Log or handle the error appropriately
+
+                return JsonResponse(response_data)
+
+            # If the result code is 0, the transaction was completed
+            callback_metadata = callback_data['Body']['stkCallback']['CallbackMetadata']
             amount = None
             phone_number = None
-            for item in callback_metadata:
+            for item in callback_metadata['Item']:
                 if item['Name'] == 'Amount':
                     amount = item['Value']
                 elif item['Name'] == 'PhoneNumber':
                     phone_number = item['Value']
 
-            # Update the Consultation object
-            consultation = Consult.objects.get(
-                checkout_request_id=checkout_request_id)
-            if result_code == 0:
-                # Successful transaction
+            # Update the Consult instance to indicate a successful transaction
+            try:
+                consultation = Consult.objects.get(
+                    checkout_request_id=checkout_request_id)
                 consultation.payment_confirmation = True
-                consultation.transaction_code = merchant_request_id
+                consultation.transaction_code = callback_data['Body']['stkCallback']['MerchantRequestID']
                 consultation.save()
-                return JsonResponse({"ResultCode": 0, "ResultDesc": "Accepted"})
-            else:
-                # Failed transaction
-                consultation.payment_confirmation = False
-                consultation.save()
-                return JsonResponse({"ResultCode": 0, "ResultDesc": "Accepted"})
+            except Consult.DoesNotExist:
+                return JsonResponse({'ResultCode': 1, 'ResultDesc': 'Consultation not found'}, status=400)
 
-        except Consult.DoesNotExist:
-            # Handle the case where the transaction code does not match any Consultation
-            return JsonResponse({"ResultCode": 1, "ResultDesc": "Consultation not found"})
+            # Return a success response to the M-Pesa server
+            response_data = {'ResultCode': 0, 'ResultDesc': 'Success'}
+            return JsonResponse(response_data)
 
-        except Exception as e:
-            # Handle any other exceptions
-            return JsonResponse({"ResultCode": 1, "ResultDesc": str(e)})
+        except json.JSONDecodeError:
+            return JsonResponse({'ResultCode': 1, 'ResultDesc': 'Invalid JSON'}, status=400)
+        except KeyError as e:
+            return JsonResponse({'ResultCode': 1, 'ResultDesc': f'Missing key: {str(e)}'}, status=400)
 
-    # If request method is not POST
-    return JsonResponse({"ResultCode": 1, "ResultDesc": "Invalid request method"})
+    return JsonResponse({'ResultCode': 1, 'ResultDesc': 'Invalid request method'}, status=405)
 
 
 def get_token():
