@@ -3,33 +3,30 @@
 <html lang="en">
 
     <head>
-    
-<head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- Bootstrap core CSS -->
+    <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+
     <title>SecuritiesPesa|Investment and Financial Consultancy</title>
-    <!-- favicon -->
-<link rel="icon" href="{% static 'main/img/favicon.png' %}" sizes="20x20" type="image/png">
-<link rel="stylesheet" href="{% static 'main/css/animate.css' %}">
-<link rel="stylesheet" href="{% static 'main/css/bootstrap.min.css' %}">
-<link rel="stylesheet" href="{% static 'main/css/magnific-popup.css' %}">
-<link rel="stylesheet" href="{% static 'main/css/nice-select.css' %}">
-<link rel="stylesheet" href="{% static 'main/css/odometer.css' %}">
-<link rel="stylesheet" href="{% static 'main/css/font-awesome.min.css' %}">
-<link rel="stylesheet" href="{% static 'main/css/slick.css' %}">
-<link rel="stylesheet" href="{% static 'main/css/style.css' %}">
-<link rel="stylesheet" href="{% static 'main/css/responsive.css' %}">
-<script src="https://cdn.ckeditor.com/4.16.0/standard/ckeditor.js"></script>
+    <!-- Additional CSS Files -->
+    <link rel="stylesheet" href="{% static 'spesa/css/fontawesome.css' %}">
+    <link rel="stylesheet" href="{% static 'spesa/css/templatemo-digimedia-v1.css' %}">
+    <link rel="stylesheet" href="{% static 'spesa/css/animated.css' %}">
+    <link rel="stylesheet" href="{% static 'spesa/css/owl.css' %}">
+<!---->
 
 </head>
 
     </head>
 
 <body>
-    <main class="page-wrapper">
-       <div class="container">
+   
         {% include 'main/includes/navbar.html' %}
         <!-- {% include '../main/includes/messaging.html' %} -->
         
@@ -37,9 +34,9 @@
         
         {% endblock content %}
         
-       </div>
+     
        {% include '../main/includes/footer.html' %}
-    </main>
+   
 
     <script>
         function showSection(sectionId, linkId) {
@@ -80,16 +77,36 @@
 <script>
     CKEDITOR.replace('id_description'); 
 </script>
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('consultation-form');
+        const submitButton = form.querySelector('button[type="submit"]');
+
+        submitButton.addEventListener('click', function() {
+            document.getElementById('loading-indicator').style.display = 'block';
+        });
+    });
+</script>
+
+<script type="text/javascript">
+    function printReceipt() {
+        var printContents = document.getElementById('receipt-content').innerHTML;
+        var originalContents = document.body.innerHTML;
+
+        document.body.innerHTML = printContents;
+        window.print();
+        document.body.innerHTML = originalContents;
+    }
+</script>
     
-    <script src="{% static 'main/js/jquery-3.6.0.min.js' %}"></script>
-    <script src="{% static 'main/js/bootstrap.min.js' %}"></script>
-    <script src="{% static 'main/js/jquery.magnific-popup.js' %}"></script>
-    <script src="{% static 'main/js/wow.min.js' %}"></script>
-    <script src="{% static 'main/js/jquery.nice-select.js' %}"></script>
-    <script src="{% static 'main/js/jquery.countdown.min.js' %}"></script>
-    <script src="{% static 'main/js/odometer.min.js' %}"></script>
-    <script src="{% static 'main/js/viewport.jquery.js' %}"></script>
-    <script src="{% static 'main/js/slick.min.js' %}"></script>
-    <script src="{% static 'main/js/main.js' %}"></script>
+    <!---->
+    <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
+    <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'spesa/js/owl-carousel.js' %}"></script>
+    <script src="{% static 'spesa/js/animation.js' %}"></script>
+    <script src="{% static 'spesa/js/imagesloaded.js' %}"></script>
+    <script src="{% static 'spesa/js/custom.js' %}"></script>
 </body>
 </html>

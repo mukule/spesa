@@ -1,51 +1,76 @@
 {% load static %}
-
-<div class="nav-area-wrapper-relative">
-    <nav class="navbar navbar-area navbar-expand-lg navigation-style-02">
-        <div class="container custom-container custom-container-01">
-            <div class="responsive-menu">
-                <div class="logo-wrapper">
-                    <a href="{% url 'main:index' %}" class="logo">
-                        <img src="{% static 'main/img/favicon.png' %}" alt="">
-                    </a>
-                </div>
-                <button class="navbar-toggler navbar-bs-toggler" type="button" data-bs-toggle="collapse"
-                    data-bs-target="#themeim_main_menu" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-            </div>
-            <div class="collapse navbar-collapse" id="themeim_main_menu">
-                <ul class="navbar-nav">
-                    <li><a href="{% url 'main:index' %}">Home</a></li>
-                    <li><a href="{% url 'main:blogs' %}">Blog</a></li>
-                    {% if user.is_authenticated %}
-                            {% if user.access_level == 3 %}
-                                <li><a href="{% url 'main:dashboard' %}">Dashboard</a></li>
-                            {% elif user.access_level == 2 %}
-                                <li><a href="{% url 'main:consultant' %}">Dashboard</a></li>
-                            {% elif user.is_superuser or user.access_level == 1 %}
-                                <li><a href="{% url 'adminstration:admin' %}">Dashboard</a></li>
-                            {% endif %}
-                        {% else %}
-                            <li><a href="{% url 'users:login' %}">Login</a></li>
-                        {% endif %}
-
-
-
-                    <li><a href="">Terms & Conditions</a></li>
-                </ul>
-            </div>
-            <div class="nav-right-content">
-               {% if user.is_authenticated %}
-               <div class="btn-wrap">
-                <a href="{% url 'users:logout' %}" class="btn btn-primary nav-btn">Logout</a>
-            </div>
-            {% else %}
-            <div class="btn-wrap">
-                <a href="{% url 'main:u' %}" class="btn btn-primary nav-btn">Register Now</a>
-            </div>
-            {% endif %}
-            </div>
+<div class="pre-header">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-sm-8 col-7">
+          <ul class="info">
+            <li><a href="#"><i class="fa fa-envelope"></i>info@securitiespesa.com</a></li>
+            <li><a href="#"><i class="fa fa-phone"></i> +254 724 855305 </a></li>
+          </ul>
         </div>
-    </nav>
-</div>
+        <div class="col-lg-4 col-sm-4 col-5">
+          <ul class="social-media">
+            <li><a href="#"><i class="fa fa-facebook"></i></a></li>
+            <li><a href="#"><i class="fa fa-youtube"></i></a></li>
+            <li><a href="#"><i class="fa fa-twitter"></i></a></li>
+           
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Pre-header End -->
+
+
+  
+
+
+  <!-- ***** Header Area Start ***** -->
+  <header class="header-area header-sticky wow slideInDown" data-wow-duration="0.75s" data-wow-delay="0s">
+    <div class="container">
+      <div class="row">
+        <div class="col-12">
+          <nav class="main-nav">
+            <!-- ***** Logo Start ***** -->
+            <a href="{% url 'main:index' %}" class="logo">
+              <img src="{% static 'main/img/favicon.png' %}" alt="">
+            </a>
+            <!-- ***** Logo End ***** -->
+            <!-- ***** Menu Start ***** -->
+            <ul class="nav">
+              <li class="scroll-to-section"><a href="{% url 'main:index' %}" class="active">Home</a></li>
+              <li class="scroll-to-section"><a href="http://securitiespesa.com/" target="_blank">About Us</a></li>
+              <li class="scroll-to-section"><a href="#services">Terms & Conditions</a></li>
+              {% if user.is_authenticated %}
+              {% if user.access_level == 3 %}
+                  <li><a href="{% url 'main:dashboard' %}">Dashboard</a></li>
+              {% elif user.access_level == 2 %}
+                  <li><a href="{% url 'main:consultant' %}">Dashboard</a></li>
+              {% elif user.is_superuser or user.access_level == 1 %}
+                  <li><a href="{% url 'adminstration:admin' %}">Dashboard</a></li>
+              {% endif %}
+          {% else %}
+              <li><a href="{% url 'users:login' %}">Login</a></li>
+          {% endif %}
+              <li class="scroll-to-section"><a href="#blog">Blog</a></li>
+              {% if user.is_authenticated %}
+              <div class="btn-wrap">
+               <a href="{% url 'users:logout' %}" class="btn btn-primary nav-btn" style="background-color: #0d75be">Logout</a>
+           </div>
+          
+           {% else %}
+           <li class="scroll-to-section"><div class="border-first-button"><a href="{% url 'users:client_register' %}">Register Now</a></div></li> 
+           {% endif %}
+            </ul>        
+            <a class='menu-trigger'>
+                <span>Menu</span>
+            </a>
+            <!-- ***** Menu End ***** -->
+          </nav>
+        </div>
+      </div>
+    </div>
+  </header>
+
+
+  

@@ -1,3 +1,4 @@
+from django.db.models import Sum
 import time
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
@@ -17,7 +18,7 @@ from .forms import *
 from securitiespesa.settings import consumer_key, consumer_secret, pass_key
 import requests
 from datetime import datetime
-shortcode = 174379
+business_short_code = '174379'
 
 
 def index(request):
@@ -52,13 +53,68 @@ def blogs(request):
 def dashboard(request):
     user_consults = Consult.objects.filter(
         user=request.user).order_by('-id')[:5]
+    last_receipt = Consult.objects.filter(
+        user=request.user,
+        payment_confirmation=True
+    ).order_by('-id').first()
+    print(last_receipt)
 
-    return render(request, 'main/dashboard.html', {'user_consults': user_consults})
+    return render(request, 'main/dashboard.html', {'user_consults': user_consults, 'last_receipt': last_receipt})
 
 
 @login_required
 def consultant(request):
-    return render(request, 'main/consultant.html')
+    if request.user.access_level == 2:  # Check if the logged-in user is a consultant
+        # Retrieve commission instances for the user
+        user_commissions = Commission.objects.filter(user=request.user)
+
+        # Calculate total commission amount
+        total_commission = user_commissions.aggregate(
+            total=Sum('consult__commission'))['total']
+
+        # Filter assigned consults for the user
+        assigned_consults = Consult.objects.filter(handler=request.user)
+
+        return render(request, 'main/consultant.html', {'tasks': assigned_consults, 'commissions': user_commissions, 'total_commission': total_commission})
+    else:
+        # Redirect or show an error message for users who are not consultants
+        return render(request, 'main/consultant.html')
+
+
+@login_required
+def consult_detail(request, consult_id):
+    consult = get_object_or_404(Consult, id=consult_id)
+    responses = Response.objects.filter(consult=consult)
+    accepted_responses = Response.objects.filter(
+        consult=consult, accepted=True)
+    user = request.user
+
+    # Check if the logged-in user is the handler for the consult
+    is_handler = user == consult.handler
+
+    is_client = user.access_level == 3
+    is_admin = user.access_level == 1 or user.is_superuser
+
+    # Handling response update
+    if request.method == 'POST':
+        response_id = request.POST.get('response_id')
+        response = get_object_or_404(Response, id=response_id)
+        form = ClientResponseForm(request.POST, instance=response)
+        if form.is_valid():
+            form.save()
+            return redirect('main:consult_detail', consult_id=consult_id)
+    else:
+        form = ClientResponseForm()
+
+    return render(request, 'main/task_detail.html', {
+        'consult': consult,
+        'responses': responses,
+        'is_handler': is_handler,
+        'is_client': is_client,
+        'accepted_responses': accepted_responses,
+        'form': form,
+        'is_admin': is_admin,
+    })
 
 
 @login_required
@@ -74,25 +130,46 @@ def create_consult(request, speciality_id):
             consult.price = speciality.price
             consult.save()
 
-            # Generate and send the invoice
-            invoice_sent = send_invoice_email(
-                request.user,
-                speciality,
-                consult.transaction_code,
-                speciality.price,
-                consult.description,
-                consult.payment_confirmation
-            )
+            # Initiating payment
+            try:
+                phone = request.user.phone
+                user_phone = format_phone_number(phone)
+                payment_response = initiate_stk_push(
+                    consult.price, user_phone, consult.category)
 
-            if invoice_sent:
-                # Success message
+                # Save the checkout request ID
+                consult.checkout_request_id = payment_response.get(
+                    'CheckoutRequestID')
+                consult.save()
                 messages.success(
-                    request, 'Consultation created successfully. Invoice sent to Your Email.')
-
-            else:
-                # Error message if invoice sending failed
+                    request, 'Payment initiated successfully.')
+                return check_payment_status(request, consult.checkout_request_id)
+            except Exception as e:
                 messages.error(
-                    request, 'Failed to send invoice. Please contact support.')
+                    request, 'Failed to initiate payment. Please try again.')
+
+            # Sending email
+            try:
+                invoice_sent = send_invoice_email(
+                    request.user,
+                    speciality,
+                    consult.transaction_code,
+                    speciality.price,
+                    consult.description,
+                    consult.payment_confirmation
+                )
+
+                if invoice_sent:
+                    # Success message
+                    messages.success(
+                        request, 'Consultation created successfully. Invoice sent to Your Email.')
+                else:
+                    # Error message if invoice sending failed
+                    messages.error(
+                        request, 'Failed to send invoice. Please contact support.')
+
+            except Exception as e:
+                pass  # Let the email fail silently
 
             # Redirect back to the same page after creating consultation
             return redirect(request.path)
@@ -140,59 +217,47 @@ def create_f_consult(request, concern_id):
             consult.payment_confirmation = False  # Pending
             consult.save()
 
-            invoice_sent = send_invoice_email(
-                request.user,
-                speciality,
-                consult.transaction_code,
-                speciality.price,
-                consult.description,
-                consult.payment_confirmation
-            )
+            # Initiating payment
+            try:
+                phone = request.user.phone
+                user_phone = format_phone_number(phone)
+                payment_response = initiate_stk_push(
+                    consult.price, user_phone, consult.category)
 
-            if invoice_sent:
+                # Save the checkout request ID
+                consult.checkout_request_id = payment_response.get(
+                    'CheckoutRequestID')
+                consult.save()
                 messages.success(
-                    request, 'Consultation created successfully. Invoice sent to your email.')
+                    request, 'Payment initiated successfully.')
 
-                try:
-                    phone = request.user.phone
-                    user_phone = format_phone_number(phone)
-                    payment_response = initiate_stk_push(
-                        consult.price, user_phone, consult.category)
-
-                    # Save the checkout request ID
-                    consult.checkout_request_id = payment_response.get(
-                        'CheckoutRequestID')
-                    consult.save()
-
-                    messages.success(
-                        request, 'Payment initiated successfully. Please complete the payment on your phone.')
-
-                    # Check payment status
-                    payment_confirmed = check_payment_status(
-                        consult.checkout_request_id)
-                    if payment_confirmed:
-                        messages.success(
-                            request, 'Payment confirmed successfully.')
-                    else:
-                        messages.error(
-                            request, 'Payment confirmation timed out or failed.')
-
-                except Exception as e:
-                    messages.error(
-                        request, f'Failed to initiate payment: {str(e)}')
-
-            else:
-                # Error message if invoice sending failed
+                return check_payment_status(request, consult.checkout_request_id)
+            except Exception as e:
                 messages.error(
-                    request, 'Failed to send invoice. Please contact support.')
+                    request, f'Failed to initiate payment. Please try again.')
 
-            # Redirect to main dashboard in all cases
-            return redirect('main:dashboard')
+            # Sending email
+            try:
+                send_invoice_email(
+                    request.user,
+                    speciality,
+                    consult.transaction_code,
+                    speciality.price,
+                    consult.description,
+                    consult.payment_confirmation
+                )
+            except Exception as e:
+                pass  # Let the email fail silently
+
+            messages.success(
+                request, 'Request created successfully.')
+
+            # Redirect to success page after completing all steps
+            return redirect('success_page')
 
         else:
-            # Error message if form is invalid
             messages.error(
-                request, 'Failed to create consultation. Please check the form.')
+                request, 'Failed to create Request. Please check the form and try again.')
 
     else:
         form = ConsultForm()
@@ -200,27 +265,35 @@ def create_f_consult(request, concern_id):
     return render(request, 'main/create_consult.html', {'form': form, 'speciality': speciality})
 
 
-def check_payment_status(checkout_request_id):
-    timeout = 35  # seconds
+def check_payment_status(request, checkout_request_id):
+    timeout = 20  # seconds
     interval = 2  # seconds
     elapsed_time = 0
 
     while elapsed_time < timeout:
-        try:
-            consult = Consult.objects.get(
-                checkout_request_id=checkout_request_id)
-            if consult.payment_confirmation:
-                return True
-            else:
-                time.sleep(interval)
-                elapsed_time += interval
-        except Consult.DoesNotExist:
-            return False
+        result = query_stk_push_status(checkout_request_id)
+        result_code = result.get('ResultCode')
 
-    return False
+        if result_code == '0':
+            try:
+                consult = Consult.objects.get(
+                    checkout_request_id=checkout_request_id)
+                consult.payment_confirmation = True
+                consult.transaction_code = result.get('MerchantRequestID')
+                consult.save()
+                messages.success(request, 'Payment confirmed successfully.')
+                return redirect('main:dashboard')
+            except Consult.DoesNotExist:
+                messages.error(request, 'Consultation not found.')
+                return redirect('main:dashboard')
+        else:
+            time.sleep(interval)
+            elapsed_time += interval
+
+    messages.error(request, 'Payment Confirmation')
+    return redirect('main:dashboard')
 
 
-@csrf_exempt
 @csrf_exempt
 def mpesa_callback(request):
     if request.method == 'POST':
@@ -265,7 +338,7 @@ def mpesa_callback(request):
                 consultation.transaction_code = callback_data['Body']['stkCallback']['MerchantRequestID']
                 consultation.save()
             except Consult.DoesNotExist:
-                return JsonResponse({'ResultCode': 1, 'ResultDesc': 'Consultation not found'}, status=400)
+                return JsonResponse({'ResultCode': 1, 'ResultDesc': 'Request not found'}, status=400)
 
             # Return a success response to the M-Pesa server
             response_data = {'ResultCode': 0, 'ResultDesc': 'Success'}
@@ -301,7 +374,6 @@ def generate_password(business_short_code, passkey):
 def initiate_stk_push(amount, phone, category):
     access_token = get_token()
 
-    business_short_code = '174379'
     passkey = pass_key
     timestamp = datetime.now().strftime('%Y%m%d%H%M%S')
     print(timestamp)
@@ -340,3 +412,98 @@ def success(request):
 
 def fail(request):
     return render(request, 'main/fail.html')
+
+
+def query_stk_push_status(checkout_request_id):
+    access_token = get_token()
+
+    passkey = pass_key
+    timestamp = datetime.now().strftime('%Y%m%d%H%M%S')
+    password = generate_password(business_short_code, passkey)
+
+    api_url = 'https://sandbox.safaricom.co.ke/mpesa/stkpushquery/v1/query'
+    headers = {
+        'Authorization': f'Bearer {access_token}',
+        'Content-Type': 'application/json'
+    }
+    payload = {
+        "BusinessShortCode": business_short_code,
+        "Password": password,
+        "Timestamp": timestamp,
+        "CheckoutRequestID": checkout_request_id,
+    }
+
+    response = requests.post(api_url, json=payload, headers=headers)
+
+    try:
+        response_json = response.json()
+        print(f"Response JSON: {response_json}")
+    except ValueError:
+        print(f"Response Content (non-JSON): {response.content}")
+        response_json = {}
+    return response.json()
+
+
+def toggle_task_acceptance(request, consult_id):
+    consult = get_object_or_404(Consult, id=consult_id)
+
+    # Toggle the task_accepted field
+    consult.task_accepted = not consult.task_accepted
+    consult.save()
+
+    # Create Commission instance if task is accepted
+    if consult.task_accepted:
+        # Retrieve the logged-in user
+        user = request.user
+
+        # Create Commission instance
+        commission = Commission.objects.create(user=user, consult=consult)
+
+    return redirect('main:consultant')
+
+
+@login_required
+def create_response(request, consult_id):
+    consult = get_object_or_404(Consult, id=consult_id)
+
+    if request.method == 'POST':
+        form = ResponseForm(request.POST, request.FILES)
+        if form.is_valid():
+            response = form.save(commit=False)
+            response.consult = consult
+            response.save()
+            messages.success(request, 'Response successfully created!')
+            return redirect('main:task_detail', consult_id=consult_id)
+        else:
+            messages.error(
+                request, 'Failed to create response. Please correct the errors in the form.')
+    else:
+        form = ResponseForm()
+
+    return render(request, 'main/create_response.html', {'form': form, 'consult': consult})
+
+
+@login_required
+def response_detail(request, response_id):
+    response = get_object_or_404(Response, id=response_id)
+
+    user = request.user
+    is_admin = user.is_superuser or (
+        user.access_level == 1 if hasattr(user, 'access_level') else False)
+    return render(request, 'main/response_detail.html', {'response': response, 'is_admin': is_admin})
+
+
+@login_required
+def update_response(request, response_id):
+    response = get_object_or_404(Response, id=response_id)
+    consult_id = response.consult_id
+
+    if request.method == 'POST':
+        form = ClientResponseForm(request.POST, instance=response)
+        if form.is_valid():
+            form.save()
+            return redirect('main:consult_detail', consult_id=consult_id)
+    else:
+        form = ClientResponseForm(instance=response)
+
+    return render(request, 'main/task_detail.html', {'form': form, 'response': response})

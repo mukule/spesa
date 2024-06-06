@@ -1,0 +1,44 @@
+{% extends 'main/base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<section class="contact-form-area-wrapper section-bottom-space">
+    <div class="container custom-container-01">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="apply-form-inner">
+                    <div class="row justify-content-between">
+                        <div class="col-lg-12">
+                            <div class="contact-form">
+                                <form class="form" method="POST" enctype="multipart/form-data">
+                                    {% csrf_token %}
+                                    <div class="part">
+                                        <h5 class="title text-center" style="color: #ee1924;">Create Response for {{response.consult.category}} Request</h5>
+                                        <div class="form-element">
+                                            <div class="row">
+                                              <label for="">Response Acceptance</label>
+                                                <div class="col-lg-12">
+                                                    {{ form.accepted|as_crispy_field }}
+                                                </div>
+                                                <label for="">Additional Notes on the Response to the Consultant</label>
+                                                <div class="col-lg-12 mt-3">
+                                                    {{ form.admin_response|as_crispy_field }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-submit text-center">
+                                        <button type="submit" class="btn-common btn-active" style="background-color: #0d75be">Submit</button>
+                                    </div>
+                                </form>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock content %}

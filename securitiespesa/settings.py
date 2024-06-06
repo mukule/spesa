@@ -175,6 +175,6 @@ CKEDITOR_CONFIGS = {
 }
 
 
-consumer_key = ""
-consumer_secret = ""
-pass_key = ""
+consumer_key = "IgPQnSL6BWaOntfgGrSMjTD65B0CGiZYwfD2Rdv50fw1Lcly"
+consumer_secret = "oj8pV2xSV3suXdxF0YYuGgipj1efZPiTzAdbXrHDGC9VvpZRtb5v7hOoPYrMbd7l"
+pass_key = "bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919"

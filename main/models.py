@@ -84,15 +84,22 @@ class Comment(models.Model):
 
 class Consult(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    handler = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True,
+                                blank=True, related_name='handled_consults', limit_choices_to={'access_level': 2})
     category = models.CharField(max_length=100)
     description = models.TextField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
     checkout_request_id = models.CharField(
         max_length=100, null=True, blank=True)
     transaction_code = models.CharField(max_length=100, null=True, blank=True)
-
     assigned = models.BooleanField(default=False)
     payment_confirmation = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+    commission = models.DecimalField(max_digits=10, decimal_places=2, default=0
+
+                                     )
+    task_accepted = models.BooleanField(default=False)
+    task_completed = models.BooleanField(default=False)
 
     def __str__(self):
         return f"{self.user.username}'s {self.category} Consult"
@@ -116,3 +123,42 @@ class TempConsultation(models.Model):
     phone = models.CharField(max_length=15)
     checkout_request_id = models.CharField(max_length=100)
     timestamp = models.DateTimeField(auto_now_add=True)
+
+
+class ConsultantPercentage(models.Model):
+    amount = models.DecimalField(max_digits=5, decimal_places=2)
+
+    def __str__(self):
+        return f"{self.amount}%"
+
+
+class Commission(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    consult = models.ForeignKey(Consult, on_delete=models.CASCADE,
+                                related_name='commission_consults')  # Updated related_name
+    date_created = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user.username} - {self.consult.category} - {self.date_created}"
+
+
+class Response(models.Model):
+    consult = models.ForeignKey(
+        'Consult',
+        on_delete=models.CASCADE,
+        related_name='responses'
+    )
+    accepted = models.BooleanField(default=False)
+    admin_response = models.TextField()
+    satisfied = models.BooleanField(default=False)
+    feedback = models.TextField(blank=True, null=True)
+    response_doc = models.FileField(
+        upload_to='response_docs/',
+        blank=True,
+        null=True,
+        validators=[FileExtensionValidator(allowed_extensions=['pdf'])]
+    )
+    more_details = models.TextField(blank=True, null=True)
+
+    def __str__(self):
+        return f"Response for {self.consult}"

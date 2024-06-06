@@ -3,86 +3,71 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
-<section class="contact-form-area-wrapper section-bottom-space">
-    <div class="container custom-container-01">
-        <div class="row justify-content-center">
-            <div class="col-lg-12">
-                <div class="apply-form-inner">
-                    <div class="row justify-content-between">
-                        <!-- M-PESA payment procedure on the left -->
-                        <div>
-                            {% if messages %}
-    {% for message in messages %}
-        {% if message.tags == 'success' %}
-            <div class="alert alert-success alert-dismissible" role="alert">
-                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                {{ message|safe|escape }}
-            </div>
-        {% elif message.tags == 'error' %}
-            <div class="alert alert-danger alert-dismissible" role="alert">
-                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                {{ message|safe }}
-            </div>
-        {% elif message.tags == 'info' %}
-            <div class="alert alert-info alert-dismissible" role="alert">
-                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                {{ message|safe|escape }}
-            </div>
-        {% elif message.tags == 'warning' %}
-            <div class="alert alert-warning alert-dismissible" role="alert">
-                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                {{ message|safe|escape }}
-            </div>
-        {% endif %}
-    {% endfor %}
-{% endif %}
-                        </div>
-                        <div class="col-lg-4">
-                            <div class="mpesa-info">
-                                <h5 class="title text-center">M-PESA Payment Procedure</h5>
-                                <p>Follow the steps to complete your payment:</p>
-                                <ol>
-                                    <li>Go to the M-PESA menu on your phone.</li>
-                                    <li>Select "Lipa na M-PESA".</li>
-                                    <li>Choose "Pay Bill".</li>
-                                    <li>Enter Business Number: <strong>******</strong>.</li>
-                                    <li>Enter Account Number: <strong>######</strong>.</li>
-                                    <li>Enter the Amount: <strong>Ksh {{speciality.price}}</strong>.</li>
-                                    <li>Enter your M-PESA PIN and send.</li>
-                                    <li>You will receive a confirmation SMS from M-PESA.</li>
-                                    <li>Enter the Transaction Code on the form ie. <strong>SEL6YPI47I</strong></li>
-                                </ol>
-                                <p class="text-center mt-3">For any issues, contact our support team.</p>
-                                <p class="text-center"><i>info@securitiespesa.co.ke</i></p>
+<div id="free-quote1" class="free-quote1">
+    <section class="contact-form-area-wrapper section-bottom-space">
+        <div class="container custom-container-01">
+            <div class="row justify-content-center">
+                <div class="col-lg-12">
+                    <div class="apply-form-inner">
+                        <div class="row justify-content-between">
+                            <!-- Messages -->
+                            <div class="col-lg-12">
+                                {% if messages %}
+                                {% for message in messages %}
+                                <div class="alert alert-{{ message.tags }}" role="alert">
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                    {{ message|safe }}
+                                </div>
+                                {% endfor %}
+                                {% endif %}
                             </div>
-                        </div>
-                        <!-- Form on the right -->
-                        <div class="col-lg-8">
-                            <div class="contact-form">
-                                <form class="form" method="POST">
-                                    {% csrf_token %}
-                                    <div class="part">
-                                        <h5 class="title text-center">Raise a call for {{speciality.name}}</h5>
-                                        <p class="text-center mt-0">You'll pay a consultation fee of Ksh {{speciality.price}} via M-PESA</p>
-                                        <div class="form-element">
-                                            <div class="row">
-                                                <div class="col-lg-12">
-                                                    {{ form.description|as_crispy_field }}
+                            <!-- M-PESA payment procedure -->
+                            <div class="col-lg-4">
+                                <div class="mpesa-info">
+                                    <h5 class="title text-center">M-PESA Payment Procedure</h5>
+                                    <p>Follow the steps to complete your payment:</p>
+                                    <ol>
+                                        <li>Go to the M-PESA menu on your phone.</li>
+                                        <li>Select "Lipa na M-PESA".</li>
+                                        <li>Choose "Pay Bill".</li>
+                                        <li>Enter Business Number: <strong>******</strong>.</li>
+                                        <li>Enter Account Number: <strong>######</strong>.</li>
+                                        <li>Enter the Amount: <strong>Ksh {{ speciality.price }}</strong>.</li>
+                                        <li>Enter your M-PESA PIN and send.</li>
+                                        <li>You will receive a confirmation SMS from M-PESA.</li>
+                                        <li>Enter the Transaction Code on the form ie. <strong>SEL6YPI47I</strong></li>
+                                    </ol>
+                                    <p class="text-center mt-3">For any issues, contact our support team.</p>
+                                    <p class="text-center"><i>info@securitiespesa.co.ke</i></p>
+                                </div>
+                            </div>
+                            <!-- Form on the right -->
+                            <div class="col-lg-8">
+                                <div class="contact-form">
+                                    <form id="consultation-form" class="form" method="POST">
+                                        {% csrf_token %}
+                                        <div class="part">
+                                            <h5 class="title text-center">Raise a call for {{ speciality.name }}</h5>
+                                            <p class="text-center mt-0">You'll pay a consultation fee of Ksh {{ speciality.price }} via M-PESA To proceed</p>
+                                            <div class="form-element">
+                                                <div class="row">
+                                                    <div class="col-lg-12">
+                                                        {{ form.description|as_crispy_field }}
+                                                    </div>
                                                 </div>
-                                
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="form-submit text-center">
-                                        <button type="submit" class="btn-common btn-active">Submit</button>
-                                    </div>
-                                </form>
+                                        <div class="form-submit text-center mt-4">
+                                            <button id="submit-btn" type="submit" class="btn btn-primary">Submit</button>
+                                        </div>
+                                    </form>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
+</div>
 {% endblock content %}

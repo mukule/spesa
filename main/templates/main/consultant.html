@@ -2,21 +2,118 @@
 {% load static %}
 
 {% block content %}
-<div class="container custom-container-01">
-        <div class="row">
-            <div class="col-lg-4">
-                <div class="checkout-wrap">
-                    consultant
-                </div>
+<div class="container custom-container-01 " style="margin-bottom: 300px;">
+    <div class="row">
+        <div class="col-lg-3 justify-content-start">
+            <div class="checkout-wrap">
+                <nav id="toc" class="navbar navbar-dark">
+                    <ul class="custom-ul">
+                        <li class="nav-item">
+                            <a href="#section1" onclick="showSection('section1')" class="btn-common">My Wallet</a>
+                        </li>
+                        
+                        <li class="nav-item mt-3">
+                            <a href="#tasks" onclick="showSection('tasks')" class="btn-common">My Assignments</a>
+                        </li>
+                        
+                    </ul>
+                </nav>
             </div>
-            <div class="col-lg-8">
-                <div class="checkout-wrap">
+        </div>
+        
+        <div class="col-lg-9">
+            <div class="dtails-wrap">
+                <div id="content">
+                    <div id="tasks" style="display: block;">
+                        <h2 class="title">My Tasks</h2>
+                        <hr>
+                        {% if tasks %}
+                           <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">Category</th>
+                                        <th>Date Created</th>
+                                        <th scope="col">Amount(Ksh)</th>
+                                        <th scope="col">Status</th>
+                                        <th>View Task</th>
+                                        <th scope="col">Action</th>
 
+                                      
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for consult in tasks %}
+                                        <tr>
+                                            <th scope="row">{{ forloop.counter }}</th>
+                                            <td>{{ consult.category }}</td>
+                                            <td>{{ consult.created_at }}</td>
+                                            <td>{{ consult.commission }}</td>
+                                           
+                                            <td>{% if consult.task_accepted  %}
+                                                <p>Task Accepted</p>
+                                                 {% else %}
+                                                 Pending
+                                                 {% endif%}
+                                            </td>
+                                            <td>  <a href="{% url 'main:task_detail' consult_id=consult.id %}">View Task</a></td>
+                                            <td>
+                                                <a href="{% url 'main:task_acceptance' consult_id=consult.id %}">Accept Task</a>
+ 
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                           </div>
+                        {% else %}
+                            <h2>No Consultations Found</h2>
+                        {% endif %}
+                    </div>
+                    <div id="section1" style="display: block;">
+                        <h2 class="title alert alert-info">Total earnings <strong class="text-danger">Ksh. {{total_commission}}</strong></h2>
+                        <hr>
+                        {% if commissions %}
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">Task Category</th>
+                                        <th scope="col">Date Accepted</th>
+                                        <th scope="col">Amount (Ksh)</th>
+                                        <th scope="col">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for commission in commissions %}
+                                        <tr>
+                                            <th scope="row">{{ forloop.counter }}</th>
+                                            <td>{{ commission.consult.category }}</td>
+                                            <td>{{ commission.date_created }}</td>
+                                            <td>{{ commission.consult.commission }}</td>
+                                            <td>
+                                                {% if commission.consult.task_completed %}
+                                                    <p>Task Accepted</p>
+                                                {% else %}
+                                                    Pending
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <h2>No Commission Found</h2>
+                    {% endif %}
+                    
+                    
+                    </div>
                 </div>
             </div>
         </div>
-
-      
     </div>
-
+</div>
 {% endblock content %}

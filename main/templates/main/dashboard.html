@@ -2,77 +2,151 @@
 {% load static %}
 
 {% block content %}
-<div class="container custom-container-01 " style="margin-bottom: 300px;">
-    <div class="row">
-        <div class="col-lg-3 justify-content-start">
-            <div class="checkout-wrap">
-                <nav id="toc" class="navbar navbar-dark">
-                    <ul class="custom-ul">
-                        <li class="nav-item">
-                            <a href="#section1" onclick="showSection('section1')" class="btn-common">My Consultations</a>
-                        </li>
-                    </ul>
-                </nav>
+<div id="free-quote1" class="free-quote1">
+    <div class="container custom-container-01 " style="margin-bottom: 300px;">
+        <div class="row">
+            <div class="col-lg-3 justify-content-start">
+                <div class="checkout-wrap">
+                    <nav id="toc" class="navbar navbar-dark">
+                        <ul class="custom-ul">
+                            <li class="nav-item">
+                                <a href="#section1" onclick="showSection('section1')" class="btn-common">My Consultations</a>
+                            </li>
+                            {% if last_receipt %}
+                            <li class="nav-item mt-3">
+                                <a href="#receipt" onclick="showSection('receipt')" class="btn-common">Receipt</a>
+                            </li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+                </div>
             </div>
-        </div>
-        
-        <div class="col-lg-9">
-            <div class="dtails-wrap">
-                <div id="content">
-                    <div id="section1" style="display: block;">
-                        <h2 class="title">My Consultations</h2>
-                        <hr>
-                        {% if user_consults %}
-                           <div class="table-responsive">
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">#</th>
-                                        <th scope="col">Category</th>
-                                        <th scope="col">Price</th>
-                                        <th scope="col">Transaction Code</th>
-                                        <th scope="col">Payment</th>
-                                        <th scope="col">Assigned</th>
-                                        <th>id</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for consult in user_consults %}
+            
+            <div class="col-lg-9">
+                <div class="dtails-wrap">
+                    <div id="content">
+                        <div id="section1" style="display: block;">
+                            <h2 class="title">My Consultations</h2>
+                            <hr>
+                            {% if user_consults %}
+                               <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
                                         <tr>
-                                            <th scope="row">{{ forloop.counter }}</th>
-                                            <td>{{ consult.category }}</td>
-                                            <td>{{ consult.price }}</td>
-                                            <td>{% if consult.transaction_code %}
-                                                {{consult.transaction_code}}
-                                                {% else %}
-                                                No Paid
-                                                {%endif%}
-                                            </td>
-                                            <td>{% if consult.payment_confirmation %}
-                                                Paid
-                                                {% else %}
-                                                Pending
-                                                {% endif %}
-                                            </td>
-                                            <td>{% if consult.assigned  %}
-                                                Assigned
-                                                {% else %}
-                                                Pending
-                                                {% endif%}
-                                            </td>
-                                            <td>{{consult.checkout_request_id}}</td>
+                                            <th scope="col">#</th>
+                                            <th scope="col">Category</th>
+                                            <th scope="col">Price(ksh)</th>
+                                            <th scope="col">Payment</th>
+                                            <th scope="col">Status</th>
+                                            <th scope="col">Handler</th>
+                                            <th scope="col">Ticket</th>
+                                            <th scope="col">View Response</th>
+                                            
+                                          
                                         </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
-                           </div>
+                                    </thead>
+                                    <tbody>
+                                        {% for consult in user_consults %}
+                                            <tr>
+                                                <th scope="row">{{ forloop.counter }}</th>
+                                                <td>{{ consult.category }}</td>
+                                                <td>{{ consult.price }}</td>
+                                               
+                                                <td>{% if consult.payment_confirmation %}
+                                                    Paid
+                                                    {% else %}
+                                                    Pending
+                                                    {% endif %}
+                                                </td>
+                                                <td>{% if consult.handler  %}
+                                                   <p>Assigned</p>
+                                                    {% else %}
+                                                    Pending
+                                                    {% endif%}
+                                                </td>
+                                                <td>{% if consult.handler %}
+                                                    Spesa-#{{consult.handler.id}} 
+                                                    {%else%}
+                                                    Not Assigned 
+                                                    {%endif%}
+                                                </td>
+                                                <td>{% if consult.task_completed %}
+                                                    <p class="alert alert-danger text-center">Closed</p>
+                                                    {% else %}
+                                                    <p class="alert alert-success text-center">Open</p>
+                                                    {%  endif%}
+                                                </td>
+                                                <td>
+                                                    <a href="{% url 'main:task_detail' consult_id=consult.id %}" >View Response</a>
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                               </div>
+                            {% else %}
+                                <h2>No Consultations Found</h2>
+                            {% endif %}
+                        </div>
+                        <div id="receipt" style="display: block;">
+                            <h2 class="title">Payment Receipt</h2>
+                            <hr>
+                            {% if last_receipt %}
+                            <div class="widget widget_receipt " id="receipt-content">
+                                <div class="receipt-header">
+                                    <div class="logo-and-title" style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+                                        <img src="http://securitiespesa.com/images/logo.png" alt="spesa-Logo" width="200" height="50">
+                                        <div style="text-align: right;">
+                                            <p style="margin: 0;"><b>Receipt No: {{ last_receipt.transaction_code }}</b></p>
+                                            <p style="margin: 0;">Date: {{ last_receipt.created_at }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- User Name and Service Category -->
+                                <div class="user-category-row" style="display: flex; justify-content: space-between; width: 100%; margin-top: 30px;">
+                                    <p style="margin: 0;"><strong>Client's Name</strong><br>{{ last_receipt.user.first_name }} {{ last_receipt.user.last_name }}</p>
+                                    <p style="margin: 0; text-align: right;"><strong>Service Category</strong> <br>{{ last_receipt.category }}</p>
+                                </div>
+                                
+                                <!-- Bordered Table for Description, Amount, and Status -->
+                                <div class="receipt-table" style="margin-top: 20px;">
+                                    <table style="width: 100%; border-collapse: collapse;">
+                                        <tr>
+                                            <th style="border: 1px solid #000; padding: 8px;">Description</th>
+                                            <th style="border: 1px solid #000; padding: 8px;">Status</th>
+                                            <th style="border: 1px solid #000; padding: 8px;">Amount (ksh)</th>
+                                        </tr>
+                                        <tr>
+                                            <td style="border: 1px solid #000; padding: 8px;">{{ last_receipt.description|safe }}</td>
+                                            <td style="border: 1px solid #000; padding: 8px;">{% if last_receipt.payment_confirmation %}Paid{% else %}Pending{% endif %}</td>
+                                            <td style="border: 1px solid #000; padding: 8px;">{{ last_receipt.price }}</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                
+                                <!-- Regards Section -->
+                                <div class="regards-section" style="text-align: right; margin-top: 20px;">
+                                    <p style="margin: 0;">Regards,<br>Securitiespesa.com <br> <i>This is a system Generated Receipt</i></p>
+                                </div>
+    
+                               
+                            </div>
+                            <div style="text-align: right; margin-top: 20px;">
+                                <button onclick="printReceipt()" class="btn btn-primary">Download Receipt</button>
+                            </div>
                         {% else %}
-                            <h2>No Consultations Found</h2>
+                            <h2>No Receipt Found</h2>
                         {% endif %}
+                        
+                        
+                        
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
 {% endblock content %}

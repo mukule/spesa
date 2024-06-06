@@ -2,66 +2,80 @@
 {% load static %}
 
 {% block content %}
-<section class="banner-area home-two">
-    <div class="container custom-container-01">
-        <div class="banner-wrapper">
-            <div class="row">
-                <div class="col-xl-6 col-lg-8">
-                    <div class="banner-inner">
-                        <h1 class="title">Access Top Certified Consultants <span>For Online Consultations</span></h1>
-                        <p>We’re an Investment and Financial Advisory Platform</p>
-                        <div class="header-btn">
-                            <div class="btn-wrap">
-                                <a href="#consult" class="btn btn-primary flat-btn p-3" style="border-radius: 30px;">Consult Now <i class="fa-solid fa-angle-right icon"></i></a>
-                            </div>
-                            
-                        </div>
-                    </div>
-                </div>
-               
 
-                <div class="col-xl-5">
-                    <div class="thumbnail">
-                        <img src="{% static 'main/img/shapes/Ellipse-03.png' %}" alt="Ellipse" class="element-06">
-                        <img src="{% static 'main/img/shapes/Ellipse-04.png' %}" alt="Ellipse" class="element-07">
-                        <img src="{% static 'main/img/shapes/Star-02.png' %}" alt="Ellipse" class="element-08">
-                        <img src="{% static 'main/img/shapes/Star-01.png' %}" alt="Ellipse" class="element-09">
-                        <img src="{% static 'main/img/header/two-person.png' %}" class="banner-img" alt="Students">
+<div class="main-banner wow fadeIn" id="top" data-wow-duration="1s" data-wow-delay="0.5s">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="row">
+            <div class="col-lg-6 align-self-center">
+              <div class="left-content show-up header-text wow fadeInLeft" data-wow-duration="1s" data-wow-delay="1s">
+                <div class="row">
+                  <div class="col-lg-12">
+                    <h6>SecuritiesPesa</h6>
+                    <h2>Best Investment Advisor</h2>
+                    <p>Access Top Certified Consultants For Online Consultations
+                        We’re an Investment and Financial Advisory Platform</p>
+                  </div>
+                  <div class="col-lg-12">
+                    <div class="border-first-button scroll-to-section">
+                      <a href="#portfolio">Consult Now</a>
                     </div>
-                   
+                  </div>
                 </div>
-                
+              </div>
             </div>
-        </div>
-    </div>
-</section>
-
-<section class="features-section margin-top-35 text-center" id="consult">
-        <div class="btn alert-success text-center p-3" role="alert" style="border-radius: 30px;">
-            Specialities
+            <div class="col-lg-6">
+              <div class="right-image wow fadeInRight" data-wow-duration="1s" data-wow-delay="0.5s">
+                <img src="{% static 'main/img/header/two-person.png' %}" alt="">
+              </div>
+            </div>
           </div>
-          <h2 class="title">Chat with Top Consultants across Specialitis</h2>
-          <p>Private online consultations with verified consultants in all specialists.</p>
-    
-    <div class="container custom-container-01 mt-4">
-        <div class="row">
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div id="portfolio" class="our-portfolio section">
+    <div class="container">
+      <div class="row text-center">
+        <div class="col-lg-12">
+          <div class="section-heading wow fadeInLeft" data-wow-duration="1s" data-wow-delay="0.3s">
+            <h6>Specialities</h6>
+            <h4>Chat with Top Consultants across Specialitis</h4>
+            <p>Private online consultations with verified consultants in all specialists.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="container-fluid wow fadeIn" data-wow-duration="1s" data-wow-delay="0.7s">
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="loop owl-carousel">
             {% if specialities %}
                 {% for speciality in specialities %}
-                    <div class="col-lg-4 col-md-6">
-                        <div class="icon-box-item">
-                            <div class="thumbnail">
-                                <img src="{{ speciality.icon.url }}" alt="{{ speciality.name }}">
-                            </div>
-                            <div class="content">
-                                <h4 class="title">{{ speciality.name }}</h4>
-                                <p>Ksh. {{ speciality.price }}</p>
-                            </div>
-                            <div class="btn-wrap">
-                                <a href="{% url 'main:consult' speciality_id=speciality.id %}" class="more-btn">Consult Now <i class="fa-solid fa-angle-right icon"></i></a>
-
-                            </div>
-                        </div>
+                <div class="item">
+                    <a href="{% url 'main:consult' speciality_id=speciality.id %}">
+                      <div class="portfolio-item">
+                      <div class="thumb">
+                        <img src="{{ speciality.icon.url }}" alt="{{ speciality.name }}">
+                      </div>
+                      <div class="down-content">
+                        <h4>{{ speciality.name }}</h4>
+                        <span>Ksh. {{ speciality.price }}</span>
+                      
+                        <p> 
+                            <button class="custom-button">Consult Now</button>
+                        </p>
+                         
+                          
+                      </div>
                     </div>
+                    
+                    </a> 
+                     
+                  </div>
                 {% endfor %}
             {% else %}
                 <div class="col">
@@ -69,123 +83,115 @@
                 </div>
             {% endif %}
         </div>
-        
-    </div>
-</section>
-
-<section class="news-section-area margin-top-110">
-    <div class="container custom-container-01">
-        <div class="row justify-content-center text-center">
-            <div class="col-lg-12">
-                <div class="btn alert-success text-center p-3" role="alert" style="border-radius: 30px;">
-                    Consult a specialist for any Financial Issue
-                  </div>
-                  <h2 class="title">Common Financial Concerns</h2>
-                 
-            
-            </div>
+           
+          </div>
         </div>
-        <div class="row">
-            {% if concerns %}
-           {% for concern in concerns %}
-           <div class="col-md-6 col-lg-4">
-            <div class="blog-grid-item">
-                <div class="thumbnail">
-                    <img src="{{ concern.banner.url }}" alt="{{concern.name}}" class="border-radius-20">
-                </div>
-                <div class="content">
-                    <h4 class="title">{{concern.name}}</h4>
-                    <p>Ksh. {{concern.price}}</p>
-                    <div class="btn-wrap">
-                        <a href="{% url 'main:fconsult' concern.id %}" class="more-btn">Consult Now <i
-                                class="fa-solid fa-angle-right icon"></i></a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        {% endfor %}
-            {% endif %}
-        </div>
-    </div>
-</section>
-
-<section class="features-section margin-top-100 text-center">
-    <div class="btn alert-success text-center p-3" role="alert" style="border-radius: 30px;">
-        About SecuritiesPesa
       </div>
-      <h4 class="title mt-3">SecuritiesPesa is a global consulting company founded in Kenya that creates information symmetry on Securities and financial Market, and in-depth industry analyses.</h4>
-      <p>We empower people to make informed decisions about their economic, financial and investment issues.</p>
-   
-   {% if abouts %}
-   <div class="container custom-container-01">
-    <div class="row">
-       {% for about in abouts %}
-       <div class="col-lg-4 col-md-6">
-        <div class="icon-box-item">
-            <div class="icon">
-                <img src="{{ about.icon.url }}" alt="{{about.icon}}">
-            </div>
-            <div class="content">
-                <h4 class="title">{{about.name}}</h4>
-                <p>{{about.description}}</p>
-            </div>
-        </div>
     </div>
-    {% endfor %}
-    </div>
-</div>
-{%endif%}
-</section>
+  </div>
 
-{% if panel %}
-<section class="features-section home-two section-bottom-space">
-    <div class="container custom-container-01">
-        <div class="row">
-           {% for p in panel %}
-           <div class="col-lg-5">
-            <div class="theme-section-title">
-                <h4 class="title text-center">
-                    {{p.name}}
-                   
-                </h4>
-                <p>{{p.description}}</p>
-            </div>
-        </div>
-        <div class="col-lg-6 offset-lg-1">
-            <div class="thumbnail">
-                <img src="{{p.image.url}}" alt="">
-            </div>
-        </div>
-        {% endfor %}
-        </div>
+  
+
+
+  <div id="free-quote" class="free-quote">
+    <div class="container">
+        <div class="text-center my-5 mt-0">
+            <h2 class="text-white">Common Financial Concerns</h2>
+            <p class="text-white">Consult a specialist for any Financial Issue.</p>
+          </div>
+      <div class="row">
+        {% if concerns %}
+        {% for concern in concerns %}
+        <div class="col-md-3 mb-4">
+          <a href="{% url 'main:fconsult' concern.id %}">
+            <div class="card border-0" style="border-radius: 30px;">
+                <img src="{{ concern.banner.url }}" class="card-img-top" alt="{{concern.name}}" style="height: 200px; object-fit: cover; border-radius: 30px;">
+                <div class="card-body">
+                  <h5 class="card-title">{{concern.name}}</h5>
+                  <p class="card-text">Ksh. {{concern.price}}</p>
+                  <p> 
+                      <button class="custom-button">Consult Now</button>
+                  </p>
+                </div>
+              </div>
+          </a>
+          </div>
+     {% endfor %}
+         {% endif %}
+      </div>
     </div>
-</section>
+  </div>
+
+
+  <div id="about" class="about section">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="row">
+            <div class="col-lg-6">
+              <div class="about-left-image  wow fadeInLeft" data-wow-duration="1s" data-wow-delay="0.5s">
+               
+{% if panel %}
+
+           {% for p in panel %}
+          
+                <img src="{{p.image.url}}" alt="">
+          
+        {% endfor %}
+     
 {% endif %}
 
-<section class="features-section margin-top-100">
-     <div class="text-center">
-        <h2 class="title">How It Works</h2>
-        <p>Using SecuritiesPesa helps to easily connect with Specialities at a time and place suitable to you. Here, we explain how your visit works.</p>
-     </div>
-   
-   {% if works %}
-   <div class="container custom-container-01">
-    <div class="row">
-       {% for work in works %}
-       <div class="col-lg-3 col-md-6">
-        <div class="icon-box-item">
-            
-            <div class="content">
-                <h4 class="title">{{work.question}}</h4>
-                <p>{{work.answer}}</p>
+
+              </div>
             </div>
+            <div class="col-lg-6 align-self-center  wow fadeInRight" data-wow-duration="1s" data-wow-delay="0.5s">
+              <div class="about-right-content">
+                <div class="section-heading">
+                  <h6> About SecuritiesPesa</h6>
+                  <h4>We empower people to make informed decisions about the economic, financial and investment issues.</h4>
+                  <div class="line-dec"></div>
+                </div>
+                <p>SecuritiesPesa is a global consulting company founded in Kenya that creates information symmetry on Securities and financial Market, and in-depth industry analyses.</p>
+               
+              </div>
+            </div>
+          </div>
         </div>
+      </div>
     </div>
-    {% endfor %}
+  </div>
+
+  <div id="contact" class="contact-us section">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="section-heading wow fadeIn" data-wow-duration="1s" data-wow-delay="0.5s">
+            <h6>How It Works</h6>
+            <h4>Using SecuritiesPesa helps to easily connect with Specialities at a time and place suitable to you. Here, we explain how your visit works.</em></h4>
+            <div class="line-dec"></div>
+          </div>
+        </div>
+
+        <div class="row">
+            {% if works %}
+            {% for work in works %}
+            <div class="col-md-3 mb-4">
+            
+                <div class="card" style="border-radius: 25px;">
+
+                    <div class="card-body">
+                      <h5 class="card-title">{{work.question}}</h5>
+                      <p class="card-text">{{work.answer}}</p>
+                     
+                    </div>
+                  </div>
+             
+              </div>
+         {% endfor %}
+             {% endif %}
+          </div>
+       
+      </div>
     </div>
-</div>
-{%endif%}
-</section>
-
-
+  </div>
 {% endblock content %}

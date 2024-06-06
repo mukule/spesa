@@ -1,0 +1,148 @@
+{% extends 'main/base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<section class="contact-form-area-wrapper section-bottom-space" style="margin-bottom: 300px;">
+    <div class="container custom-container-01">
+        <div class="row justify-content-center">
+            <div class="col-lg-12">
+                <div class="apply-form-inner">
+                    <div class="row justify-content-between">
+                        <h2 class="text-center" style="color: #ee1924;">Task Type: {{ consult.category }}</h2>
+                        <p class="text-center" style="color: #0d75be">Task Details and Description: {{ consult.description|safe }}</p>
+                    </div>
+
+                   {% if is_admin %}
+                   <div class="row justify-content-center">
+                    <h3 class="text-center">Responses</h3>
+                    {% if responses %}
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Response File</th>
+                                    <th scope="col">Status</th>
+                                    <th scope="col">Satisfied</th>
+                                    <th scope="col">View Details</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for response in responses %}
+                                    <tr>
+                                        <td>
+                                            {% if response.response_doc %}
+                                                <a href="{{ response.response_doc.url }}" target="_blank">
+                                                    <i class="fas fa-file-pdf text-danger"></i>
+                                                </a>
+                                            {% else %}
+                                                No document
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if response.accepted %}
+                                               Response Approved
+                                            {% else %}
+                                                Response Submitted
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if response.satisfied %}
+                                                {{ response.satisfied }}
+                                            {% else %}
+                                                Pending
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <a href="{% url 'main:response_detail' response_id=response.id %}" class="btn btn-info btn-sm">Details</a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    {% else %}
+                        <p class="text-center">No responses available for this Task.</p>
+                    {% endif %}
+                   {% if is_handler %}
+                   <div class="text-center">
+                    <a href="{% url 'main:create_response' consult_id=consult.id %}" class="btn btn-primary" style="background-color: #0d75be;">Create Response</a>
+                </div>
+                {% endif %}
+                </div>
+                   {% endif %}
+
+                {% if is_client %}
+                <div class="row justify-content-center">
+                    {% if accepted_responses %}
+                    <p class="alert alert-info text-center"> Please Review the response provided by Our Trusted Consultant</p>
+                    <div class="row text-center mb-4">
+                        <div class="col-md-8">
+                          <div class="row">
+                            <div class="col-md-6">
+                               {% for response in accepted_responses %}
+                               {% if response.response_doc %}
+                               <a href="{{ responses.response_doc.url }}" target="_blank">
+                                   <i class="fas fa-file-pdf fa-3x text-danger"></i>
+                               </a>
+                               Response file
+                           {% else %}
+                               No document
+                           {% endif %}
+                           </div>
+                           <div class="col-md-6">
+                           {% if response.more_details %}
+                           <p>{{response.more_details}}</p>
+                           {% endif %}
+                           {% endfor %}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <hr>
+                      <div class="row justify-content-center">
+                        <div class="col-lg-8">
+                            <div class="apply-form-inner">
+                                <div class="row justify-content-between">
+                                    <div class="col-lg-12">
+                                        <div class="contact-form">
+                                            <form class="form" method="POST" enctype="multipart/form-data">
+                                                {% csrf_token %}
+                                                <div class="part">
+                                                    <h5 class="title text-center" style="color: #ee1924;">{{consult.category}} Request Response Feedback</h5>
+                                                    <div class="form-element">
+                                                        <div class="row">
+                                                         <div class="form-row">
+                                                            <label for="">I am Satsified with the Feedback Provided</label>
+                                                            <div class="col-lg-12">
+                                                                {{ form.satisfied|as_crispy_field }}
+                                                            </div>
+                                                         </div>
+                                                            <label for="">Have any Comments for your Consultant ?</label>
+                                                            <div class="col-lg-12 mt-3">
+                                                                {{ form.feedback|as_crispy_field }}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="form-submit text-center">
+                                                    <button type="submit" class="btn-common btn-active" style="background-color: #0d75be">Submit</button>
+                                                </div>
+                                            </form>
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                      
+                    {% else %}
+                    <p class="alert alert-info text-center"> Your Request has not been acted upon yet,Kindly be patient while we are preparing the best response for you.</p>
+                    {% endif %}
+                </div>
+                {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock content %}

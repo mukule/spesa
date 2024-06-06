@@ -123,3 +123,46 @@ class BlogForm(forms.ModelForm):
             'name': forms.TextInput(attrs={'class': 'form-control'}),
             'banner': forms.FileInput(attrs={'class': 'form-control'}),
         }
+
+
+class AssignHandlerForm(forms.ModelForm):
+    class Meta:
+        model = Consult
+        fields = ['handler']
+
+    def __init__(self, *args, **kwargs):
+        super(AssignHandlerForm, self).__init__(*args, **kwargs)
+        self.fields['handler'].queryset = CustomUser.objects.filter(
+            access_level=2)
+        self.fields['handler'].required = True
+        self.fields['handler'].empty_label = "Select a handler"
+        self.fields['handler'].widget.attrs.update({'class': 'form-control'})
+
+
+class ConsultantPercentageForm(forms.ModelForm):
+    class Meta:
+        model = ConsultantPercentage
+        fields = ['amount']
+        widgets = {
+            'amount': forms.NumberInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Enter percentage',
+            }),
+        }
+        labels = {
+            'amount': '',
+        }
+
+
+class AdminResponseForm(forms.ModelForm):
+    class Meta:
+        model = Response
+        fields = ['accepted', 'admin_response']
+        labels = {
+            'accepted': '',
+            'admin_response': ''
+        }
+        widgets = {
+            'accepted': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+            'admin_response': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Admin Response'}),
+        }

@@ -39,5 +39,11 @@ urlpatterns = [
          views.create_blog, name='create_blog'),
     path('<int:blog_id>/edit/', views.edit_blog, name='edit_blog'),
     path('<int:blog_id>/delete/', views.delete_blog, name='delete_blog'),
+    path('consult/<int:consult_id>/assign-handler/',
+         views.assign_handler_view, name='assign_handler'),
+    path("create_or_update_consultant_percentage/",
+         views.create_or_update_consultant_percentage, name="consultant_percentage"),
+    path('response/<int:response_id>/update',
+         views.update_response, name='update_response'),
 
 ]

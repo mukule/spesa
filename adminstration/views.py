@@ -8,6 +8,7 @@ from django.db.models import Count
 from django.http import Http404
 from django.utils import timezone
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.contrib import messages
 
 # Create your views here.
 
@@ -314,3 +315,90 @@ def delete_blog(request, blog_id):
 
     blog.delete()
     return redirect('adminstration:admin')
+
+
+@admin
+def assign_handler_view(request, consult_id):
+    consult = get_object_or_404(Consult, id=consult_id)
+    rate = ConsultantPercentage.objects.first()
+
+    if not consult.payment_confirmation:
+        messages.error(
+            request, "Payment confirmation is required before assigning a handler.")
+        return redirect('adminstration:admin')
+
+    if request.method == 'POST':
+        form = AssignHandlerForm(request.POST, instance=consult)
+        if form.is_valid():
+            # Save the form which updates the handler
+            form.save()
+
+            # Update commission based on Consultant Percentage
+            if rate:
+                commission = consult.price * (rate.amount / 100)
+            else:
+                # If Consultant Percentage is not set, default commission to 30% of the consult price
+                commission = consult.price * 0.3
+
+            # Update commission in the Consult model
+            consult.commission = commission
+            consult.save()
+
+            messages.success(
+                request, f"Handler assigned to {consult.category} consult.")
+            return redirect('adminstration:admin')
+    else:
+        initial_data = {
+            'handler': consult.handler_id} if consult.handler else None
+        form = AssignHandlerForm(instance=consult, initial=initial_data)
+
+    # Update commission based on Consultant Percentage
+    if rate:
+        commission = consult.price * (rate.amount / 100)
+    else:
+        # If Consultant Percentage is not set, default commission to 30% of the consult price
+        commission = consult.price * 0.3
+
+    return render(request, 'adminstration/assign_handler.html', {'form': form, 'consult': consult, 'rate': rate, 'commission': commission})
+
+
+@admin
+def create_or_update_consultant_percentage(request):
+    try:
+        consultant_percentage = ConsultantPercentage.objects.get()
+    except ConsultantPercentage.DoesNotExist:
+        consultant_percentage = None
+
+    if request.method == 'POST':
+        form = ConsultantPercentageForm(
+            request.POST, instance=consultant_percentage)
+        if form.is_valid():
+            amount = form.cleaned_data.get('amount')
+            if amount < 0:
+                form.add_error('amount', 'Percentage cannot be negative.')
+            elif amount > 100:
+                form.add_error('amount', 'Percentage cannot exceed 100.')
+            else:
+                form.save()
+                messages.success(
+                    request, 'Consultant percentage Updated succesfully')
+                return redirect('adminstration:consultant_percentage')
+    else:
+        form = ConsultantPercentageForm(instance=consultant_percentage)
+
+    return render(request, 'adminstration/create_consultant_percentage.html', {'form': form})
+
+
+@login_required
+def update_response(request, response_id):
+    response = get_object_or_404(Response, id=response_id)
+
+    if request.method == 'POST':
+        form = AdminResponseForm(request.POST, instance=response)
+        if form.is_valid():
+            form.save()
+            return redirect('main:response_detail', response_id=response_id)
+    else:
+        form = AdminResponseForm(instance=response)
+
+    return render(request, 'adminstration/update_response.html', {'form': form, 'response': response})
