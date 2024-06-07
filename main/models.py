@@ -2,6 +2,16 @@ from django.db import models
 from users.models import *
 
 
+class Hero(models.Model):
+    title = models.CharField(max_length=200)
+    description = models.TextField()
+    image = models.ImageField(
+        upload_to='panel_images/', default='default/hero.png')
+
+    def __str__(self):
+        return self.title
+
+
 class Speciality(models.Model):
     name = models.CharField(max_length=100)
     icon = models.ImageField(

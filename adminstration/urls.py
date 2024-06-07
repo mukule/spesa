@@ -45,5 +45,7 @@ urlpatterns = [
          views.create_or_update_consultant_percentage, name="consultant_percentage"),
     path('response/<int:response_id>/update',
          views.update_response, name='update_response'),
+    path('update_hero/', views.update_hero, name='update_hero'),
+    path('hero/', views.hero, name='hero')
 
 ]

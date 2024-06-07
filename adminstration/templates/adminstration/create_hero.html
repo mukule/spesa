@@ -1,0 +1,36 @@
+{% extends 'main/base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div id="free-quote1" class="free-quote1 py-5">
+    <div class="container custom-container-01">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="apply-form-inner">
+                    <div class="contact-form">
+                        <form class="form" method="POST" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <div class="part">
+                                <h5 class="title text-center mb-4">Create the Intro/Banner section</h5>
+                                <div class="form-element mb-3">
+                                    {{ form.title|as_crispy_field }}
+                                </div>
+                                <div class="form-element mb-3">
+                                    {{ form.description|as_crispy_field }}
+                                </div>
+                                <div class="form-element mb-4">
+                                    {{ form.image|as_crispy_field }}
+                                </div>
+                                <div class="form-submit text-center">
+                                    <button type="submit" class="btn btn-primary btn-active">Submit</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

@@ -55,7 +55,8 @@
               <li class="scroll-to-section"><a href="#blog">Blog</a></li>
               {% if user.is_authenticated %}
               <div class="btn-wrap">
-               <a href="{% url 'users:logout' %}" class="btn btn-primary nav-btn" style="background-color: #0d75be">Logout</a>
+                <li class="scroll-to-section"><div class="border-first-button"><a href="{% url 'users:logout' %}">Logout</a></div></li> 
+             
            </div>
           
            {% else %}

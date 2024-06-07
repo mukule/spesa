@@ -166,3 +166,19 @@ class AdminResponseForm(forms.ModelForm):
             'accepted': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
             'admin_response': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Admin Response'}),
         }
+
+
+class HeroForm(forms.ModelForm):
+    class Meta:
+        model = Hero
+        fields = ['title', 'description', 'image']
+        labels = {
+            'title': '',
+            'description': '',
+            'image': ''
+        }
+        widgets = {
+            'title': forms.TextInput(attrs={'placeholder': 'Title', 'class': 'form-control'}),
+            'description': forms.Textarea(attrs={'placeholder': 'Description', 'class': 'form-control'}),
+            'image': forms.FileInput(attrs={'class': 'form-control'})
+        }

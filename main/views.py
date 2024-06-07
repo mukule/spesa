@@ -28,12 +28,18 @@ def index(request):
     panel = Panel.objects.all()
     works = Works.objects.all()
 
+    try:
+        hero_instance = Hero.objects.get(pk=1)
+    except Hero.DoesNotExist:
+        hero_instance = None
+
     context = {
         'specialities': specialities,
         'concerns': concerns,
         'abouts': abouts,
         'panel': panel,
-        'works': works
+        'works': works,
+        'hero': hero_instance,
     }
     return render(request, 'main/index.html', context)
 

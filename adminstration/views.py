@@ -26,6 +26,11 @@ def dashboard(request):
     # Retrieve all consults and order them by id in descending order
     consults = Consult.objects.all().order_by('-id')
 
+    try:
+        hero_instance = Hero.objects.get(pk=1)
+    except Hero.DoesNotExist:
+        hero_instance = None
+
     # Paginate the consults to display 10 per page
     paginator = Paginator(consults, 10)
 
@@ -47,7 +52,8 @@ def dashboard(request):
         'panel': panel,
         'works': works,
         'categories': categories,
-        'consults': consults
+        'consults': consults,
+        'hero': hero_instance,
     }
     return render(request, 'adminstration/dashboard.html', context)
 
@@ -126,7 +132,10 @@ def delete_financial_concern(request, concern_id):
 def create_about(request):
     if About.objects.count() >= 3:
 
-        return render(request, 'adminstration:admin', {'error_message': 'You cannot create more than 3 About instances.'})
+        messages.error(
+            request, "You can not Create more than 3")
+
+        return redirect('adminstration:admin',)
 
     if request.method == 'POST':
         form = AboutForm(request.POST, request.FILES)
@@ -402,3 +411,31 @@ def update_response(request, response_id):
         form = AdminResponseForm(instance=response)
 
     return render(request, 'adminstration/update_response.html', {'form': form, 'response': response})
+
+
+@login_required
+def update_hero(request):
+    try:
+        instance = Hero.objects.get(pk=1)
+    except Hero.DoesNotExist:
+        instance = None
+
+    if request.method == 'POST':
+        form = HeroForm(request.POST, request.FILES, instance=instance)
+        if form.is_valid():
+            form.save()
+            return redirect('adminstration:admin')
+    else:
+        form = HeroForm(instance=instance)
+
+    return render(request, 'adminstration/create_hero.html', {'form': form})
+
+
+@login_required
+def hero(request):
+    try:
+        hero_instance = Hero.objects.get(pk=1)
+    except Hero.DoesNotExist:
+        hero_instance = None
+
+    return render(request, 'adminstration/hero.html', {'hero': hero_instance})

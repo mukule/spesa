@@ -3,54 +3,35 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
-<section class="contact-form-area-wrapper section-bottom-space">
+<div id="free-quote1" class="free-quote1 py-5">
     <div class="container custom-container-01">
         <div class="row justify-content-center">
             <div class="col-lg-8">
                 <div class="apply-form-inner">
-                    <div class="row justify-content-between">
-                        <div class="col-lg-12">
-                            <div class="contact-form">
-                                <form class="form" method="POST">
-                                    {% csrf_token %}
-                                    <div class="part">
-                                        <h5 class="title text-center">Edit {{about.name}}</h5>
-                                        <div class="form-element">
-                                            <div class="row">
-                                                <div class="col-lg-12">
-                                                    
-                                                    {{ form.name|as_crispy_field }}
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="form-element">
-                                            <div class="row">
-                                                <div class="col-lg-12">
-                                                   
-                                                    {{ form.description|as_crispy_field }}
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="form-element">
-                                            <div class="row">
-                                                <div class="col-lg-12">
-                                                    
-                                                    {{ form.icon|as_crispy_field }}
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="form-submit text-center">
-                                        <button type="submit" class="btn-common btn-active">Submit</button>
-                                    </div>
-                                    
-                                </form>
+                    <div class="contact-form">
+                        <form class="form" method="POST">
+                            {% csrf_token %}
+                            <div class="part">
+                                <h5 class="title text-center mb-4">Edit {{ about.name }}</h5>
+                                <div class="form-element mb-3">
+                                    {{ form.name|as_crispy_field }}
+                                </div>
+                                <div class="form-element mb-3">
+                                    {{ form.description|as_crispy_field }}
+                                </div>
+                                <div class="form-element mb-4">
+                                    {{ form.icon|as_crispy_field }}
+                                </div>
+                                <div class="form-submit text-center">
+                                    <button type="submit" class="btn btn-primary btn-active">Submit</button>
+                                </div>
                             </div>
-                        </div>
+                        </form>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</section>
+</div>
+
 {% endblock content %}
