@@ -35,7 +35,7 @@ def index(request):
 
     try:
         section1_instance = Section1.objects.get(pk=1)
-    except Hero.DoesNotExist:
+    except Section1.DoesNotExist:
         section1_instance = None
 
     try:
