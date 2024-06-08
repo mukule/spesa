@@ -1055,6 +1055,13 @@ Banner Style
 }
 
 
+.round-image {
+  border-radius: 50%;
+  width: 100px; /* Adjust the width as necessary */
+  height: 100px; /* Adjust the height as necessary */
+  object-fit: cover; /* Ensure the image covers the circular area */
+}
+
 
 /* 
 ---------------------------------------------
@@ -1524,6 +1531,58 @@ Services Style
 
 .custom-ul li.active a {
   color: #dc3545; /* Change color of active link */
+}
+
+
+.speciality-link {
+  text-decoration: none;
+  color: inherit;
+}
+
+.speciality-item {
+  text-align: center;
+  margin: 15px 0;
+}
+
+.thumb {
+  margin-bottom: 10px;
+}
+
+.round-image {
+  border-radius: 50%;
+  width: 150px !important;
+  height: 150px !important;
+  object-fit: cover;
+  display: block;
+  margin: 0 auto;
+}
+
+.details {
+  text-align: center;
+}
+
+.details h4 {
+  font-size: 1.25em;
+  margin-bottom: 10px;
+}
+
+.details span {
+  display: block;
+  font-size: 1em;
+  margin-bottom: 10px;
+}
+
+.custom-button {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.custom-button:hover {
+  background-color: #0056b3;
 }
 
 

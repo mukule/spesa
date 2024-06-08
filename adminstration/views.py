@@ -31,6 +31,9 @@ def dashboard(request):
     except Hero.DoesNotExist:
         hero_instance = None
 
+    section1_instance = Section1.objects.first()
+    section2_instance = Section2.objects.first()
+    how_instance = How.objects.first()
     # Paginate the consults to display 10 per page
     paginator = Paginator(consults, 10)
 
@@ -54,6 +57,9 @@ def dashboard(request):
         'categories': categories,
         'consults': consults,
         'hero': hero_instance,
+        'section1': section1_instance,
+        'section2': section2_instance,
+        'how': how_instance,
     }
     return render(request, 'adminstration/dashboard.html', context)
 
@@ -439,3 +445,69 @@ def hero(request):
         hero_instance = None
 
     return render(request, 'adminstration/hero.html', {'hero': hero_instance})
+
+
+@admin
+def create_or_edit_section1(request):
+    section1 = Section1.objects.first()
+
+    if request.method == 'POST':
+        if section1:
+            form = Section1Form(request.POST, instance=section1)
+        else:
+            form = Section1Form(request.POST)
+
+        if form.is_valid():
+            form.save()
+            return redirect('adminstration:admin')
+    else:
+        if section1:
+            form = Section1Form(instance=section1)
+        else:
+            form = Section1Form()
+
+    return render(request, 'adminstration/create_section1.html', {'form': form})
+
+
+@admin
+def create_or_edit_section2(request):
+    section1 = Section2.objects.first()
+
+    if request.method == 'POST':
+        if section1:
+            form = Section2Form(request.POST, instance=section1)
+        else:
+            form = Section2Form(request.POST)
+
+        if form.is_valid():
+            form.save()
+            return redirect('adminstration:admin')
+    else:
+        if section1:
+            form = Section2Form(instance=section1)
+        else:
+            form = Section2Form()
+
+    return render(request, 'adminstration/create_section1.html', {'form': form})
+
+
+@admin
+def create_or_edit_how(request):
+    section1 = How.objects.first()
+
+    if request.method == 'POST':
+        if section1:
+            form = HowForm(request.POST, instance=section1)
+        else:
+            form = HowForm(request.POST)
+
+        if form.is_valid():
+            form.save()
+            return redirect('adminstration:admin')
+    else:
+        if section1:
+            form = HowForm(instance=section1)
+        else:
+            form = HowForm()
+
+    return render(request, 'adminstration/create_how_it_works.html', {'form': form})

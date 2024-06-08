@@ -33,6 +33,21 @@ def index(request):
     except Hero.DoesNotExist:
         hero_instance = None
 
+    try:
+        section1_instance = Section1.objects.get(pk=1)
+    except Hero.DoesNotExist:
+        section1_instance = None
+
+    try:
+        section2_instance = Section2.objects.get(pk=1)
+    except Section2.DoesNotExist:
+        section2_instance = None
+
+    try:
+        how_instance = How.objects.get(pk=1)
+    except How.DoesNotExist:
+        how_instance = None
+
     context = {
         'specialities': specialities,
         'concerns': concerns,
@@ -40,6 +55,10 @@ def index(request):
         'panel': panel,
         'works': works,
         'hero': hero_instance,
+        'section1': section1_instance,
+        'section2': section2_instance,
+        'how': how_instance,
+
     }
     return render(request, 'main/index.html', context)
 

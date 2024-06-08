@@ -54,14 +54,16 @@ class AboutForm(forms.ModelForm):
 class PanelForm(forms.ModelForm):
     class Meta:
         model = Panel
-        fields = ['name', 'description', 'image']
+        fields = ['name', 'title', 'description', 'image']
         labels = {
             'name': '',
+            'title': '',
             'description': '',
             'image': '',
         }
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Name'}),
+            'title': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Title'}),
             'description': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Description'}),
             'image': forms.ClearableFileInput(attrs={'class': 'form-control-file'}),
         }
@@ -181,4 +183,68 @@ class HeroForm(forms.ModelForm):
             'title': forms.TextInput(attrs={'placeholder': 'Title', 'class': 'form-control'}),
             'description': forms.Textarea(attrs={'placeholder': 'Description', 'class': 'form-control'}),
             'image': forms.FileInput(attrs={'class': 'form-control'})
+        }
+
+
+class Section1Form(forms.ModelForm):
+    class Meta:
+        model = Section1
+        fields = ['name', 'tag1', 'tag2']
+        widgets = {
+            'name': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Enter name'
+            }),
+            'tag1': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Enter tag1'
+            }),
+            'tag2': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Enter tag2'
+            }),
+        }
+        labels = {
+            'name': '',
+            'tag1': '',
+            'tag2': '',
+        }
+
+
+class Section2Form(forms.ModelForm):
+    class Meta:
+        model = Section2
+        fields = ['name', 'tag1', 'tag2']
+        widgets = {
+            'name': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Enter name'
+            }),
+            'tag1': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Enter tag1'
+            }),
+            'tag2': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Enter tag2'
+            }),
+        }
+        labels = {
+            'name': '',
+            'tag1': '',
+            'tag2': '',
+        }
+
+
+class HowForm(forms.ModelForm):
+    class Meta:
+        model = How
+        fields = ['name', 'description']
+        labels = {
+            'name': '',
+            'description': ''
+        }
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter section name'}),
+            'description': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Description'}),
         }

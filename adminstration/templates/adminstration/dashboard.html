@@ -17,6 +17,9 @@
                                 <a href="#hero" onclick="showSection('hero')" class="category mt-1">Update Hero</a>
                             </li>
                             <li>
+                                <a href="#secs" onclick="showSection('secs')" class="category mt-1">Update Headers</a>
+                            </li>
+                            <li>
                                 <a href="#section2" onclick="showSection('section2')" class="category mt-1">Specialities</a>
                             </li>
                             <li>
@@ -80,7 +83,7 @@
                                                 <td>{{ hero.description }}</td>
                                                 <td>
                                                     {% if hero.image %}
-                                                        <img src="{{ hero.image.url }}" alt="{{ hero_instance.title }} Image" width="50px" height="30px" class="img-thumbnail">
+                                                     Image
                                                     {% else %}
                                                         No image available
                                                     {% endif %}
@@ -98,6 +101,108 @@
                             {% else %}
                                 <h2>No Hero Instance Found</h2>
                             {% endif %}
+                        </div>
+                        <div id="secs">
+                            <div class="row">
+                                <div class="col">
+                                    <h2 class="title">Content Headers</h2>
+                                </div>
+                              
+                            </div>
+                            <hr>
+                            {% if section1 %}
+                            <div class="table-responsive">
+                                <table class="table table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">#</th>
+                                            <th scope="col">Name</th>
+                                            <th scope="col">Tag 1</th>
+                                            <th scope="col">Tag 2</th>
+                                            <th scope="col">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr style="font-size: 0.875em;">
+                                            <th scope="row">1</th>
+                                            <td>{{ section1.name }}</td>
+                                            <td>{{ section1.tag1 }}</td>
+                                            <td>{{ section1.tag2 }}</td>
+                                            <td>
+                                                <a href="{% url 'adminstration:update_section1' %}" class="btn btn-sm btn-warning mr-2">Edit</a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% else %}
+                        <div class="col text-right">
+                            <a href="{% url 'adminstration:update_section1' %}" class="btn btn-primary">Update Section 1 Details</a>
+                        </div>
+                        {% endif %}
+                        <hr>
+                        <h3>Section 2 Details</h3>
+                        {% if section2 %}
+                            <div class="table-responsive">
+                                <table class="table table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">#</th>
+                                            <th scope="col">Name</th>
+                                            <th scope="col">Tag 1</th>
+                                            <th scope="col">Tag 2</th>
+                                            <th scope="col">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr style="font-size: 0.875em;">
+                                            <th scope="row">1</th>
+                                            <td>{{ section2.name }}</td>
+                                            <td>{{ section2.tag1 }}</td>
+                                            <td>{{ section2.tag2 }}</td>
+                                            <td>
+                                                <a href="{% url 'adminstration:update_section2' %}" class="btn btn-sm btn-warning mr-2">Edit</a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% else %}
+                        <div class="col text-right">
+                            <a href="{% url 'adminstration:update_section2' %}" class="btn btn-primary">Update Section 1 Details</a>
+                        </div>
+                        {% endif %}
+
+                        <h3>How it works Details</h3>
+                        {% if how %}
+                            <div class="table-responsive">
+                                <table class="table table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">#</th>
+                                            <th scope="col">Name</th>
+                                            <th scope="col">Description</th>
+                                            <th scope="col">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr style="font-size: 0.875em;">
+                                            <th scope="row">1</th>
+                                            <td>{{ how.name }}</td>
+                                            <td>{{ how.description }}</td>
+                                            <td>
+                                                <a href="{% url 'adminstration:update_how' %}" class="btn btn-sm btn-warning mr-2">Edit</a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% else %}
+                        <div class="col text-right">
+                            <a href="{% url 'adminstration:update_how' %}" class="btn btn-primary">Update How it works Headers Details</a>
+                        </div>
+                        {% endif %}
+                        
                         </div>
                         
                         

@@ -12,18 +12,12 @@
                         <form class="form" method="POST">
                             {% csrf_token %}
                             <div class="part">
-                                <h5 class="title text-center mb-4">Create the Advisory Panel Section</h5>
+                                <h5 class="title text-center mb-4">Update How it works Headers</h5>
                                 <div class="form-element mb-3">
                                     {{ form.name|as_crispy_field }}
                                 </div>
-                                <div class="form-element mb-3">
-                                    {{ form.title|as_crispy_field }}
-                                </div>
-                                <div class="form-element mb-3">
-                                    {{ form.description|as_crispy_field }}
-                                </div>
                                 <div class="form-element mb-4">
-                                    {{ form.image|as_crispy_field }}
+                                    {{ form.description|as_crispy_field }}
                                 </div>
                                 <div class="form-submit text-center">
                                     <button type="submit" class="btn btn-primary btn-active">Submit</button>

@@ -46,6 +46,13 @@ urlpatterns = [
     path('response/<int:response_id>/update',
          views.update_response, name='update_response'),
     path('update_hero/', views.update_hero, name='update_hero'),
-    path('hero/', views.hero, name='hero')
+    path('hero/', views.hero, name='hero'),
+    path('create_or_edit_section1/', views.create_or_edit_section1,
+         name='update_section1'),
+    path('create_or_edit_section2/', views.create_or_edit_section2,
+         name='update_section2'),
+    path('create_or_edit_how/', views.create_or_edit_how,
+         name='update_how')
+
 
 ]

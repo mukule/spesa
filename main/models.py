@@ -44,6 +44,7 @@ class About(models.Model):
 
 class Panel(models.Model):
     name = models.CharField(max_length=100)
+    title = models.TextField(blank=True, null=True)
     description = models.TextField()
     image = models.ImageField(
         upload_to='panel_images/', default='default/panel.png')
@@ -172,3 +173,29 @@ class Response(models.Model):
 
     def __str__(self):
         return f"Response for {self.consult}"
+
+
+class Section1(models.Model):
+    name = models.CharField(max_length=100)
+    tag1 = models.CharField(max_length=300)
+    tag2 = models.CharField(max_length=300)
+
+    def __str__(self):
+        return self.name
+
+
+class Section2(models.Model):
+    name = models.CharField(max_length=100)
+    tag1 = models.CharField(max_length=300)
+    tag2 = models.CharField(max_length=300)
+
+    def __str__(self):
+        return self.name
+
+
+class How(models.Model):
+    name = models.CharField(max_length=200)
+    description = models.TextField(blank=True, null=True)
+
+    def __str__(self):
+        return self.name

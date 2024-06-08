@@ -69,51 +69,55 @@
     <div class="container">
       <div class="row text-center">
         <div class="col-lg-12">
-          <div class="section-heading wow fadeInLeft" data-wow-duration="1s" data-wow-delay="0.3s">
-            <h6>Specialities</h6>
-            <h4>Chat with Top Consultants across Specialitis</h4>
-            <p>Private online consultations with verified consultants in all specialists.</p>
-          </div>
+         {% if section1 %}
+         <div class="section-heading wow fadeInLeft" data-wow-duration="1s" data-wow-delay="0.3s">
+          <h6>{{section1.name}}</h6>
+          <h4>{{section1.tag1}}</h4>
+          <p>{{section1.tag2}}</p>
+        </div>
+        {% else %}
+        <div class="section-heading wow fadeInLeft" data-wow-duration="1s" data-wow-delay="0.3s">
+          <h6>Specialities</h6>
+          <h4>Chat with Top Consultants across Specialitis</h4>
+          <p>Private online consultations with verified consultants in all specialists.</p>
+        </div>
+        {% endif %}
+
         </div>
       </div>
     </div>
     <div class="container-fluid wow fadeIn" data-wow-duration="1s" data-wow-delay="0.7s">
       <div class="row">
         <div class="col-lg-12">
-          <div class="loop owl-carousel">
-            {% if specialities %}
-                {% for speciality in specialities %}
-                <div class="item">
-                    <a href="{% url 'main:consult' speciality_id=speciality.id %}">
-                      <div class="portfolio-item">
-                      <div class="thumb">
-                        <img src="{{ speciality.icon.url }}" alt="{{ speciality.name }}">
-                      </div>
-                      <div class="down-content">
-                        <h4>{{ speciality.name }}</h4>
-                        <span>Ksh. {{ speciality.price }}</span>
-                      
-                        <p> 
-                            <button class="custom-button">Consult Now</button>
-                        </p>
-                         
-                          
-                      </div>
+            <div class="loop owl-carousel">
+                {% if specialities %}
+                    {% for speciality in specialities %}
+                    <div class="item">
+                        <a href="{% url 'main:consult' speciality_id=speciality.id %}" class="speciality-link">
+                            <div class="speciality-item">
+                                <div class="thumb" >
+                                    <img src="{{ speciality.icon.url }}" alt="{{ speciality.name }}" class="round-image" style="border: 4px solid #B78F2E">
+                                </div>
+                                <div class="details">
+                                    <h4>{{ speciality.name }}</h4>
+                                    <span>Ksh. {{ speciality.price }}</span>
+                                    <p>
+                                        <button class="custom-button">Consult Now</button>
+                                    </p>
+                                </div>
+                            </div>
+                        </a>
                     </div>
-                    
-                    </a> 
-                     
-                  </div>
-                {% endfor %}
-            {% else %}
-                <div class="col">
-                    <p>No specialities found.</p>
-                </div>
-            {% endif %}
+                    {% endfor %}
+                {% else %}
+                    <div class="col">
+                        <p>No specialities found.</p>
+                    </div>
+                {% endif %}
+            </div>
         </div>
-           
-          </div>
-        </div>
+    </div>
+    
       </div>
     </div>
   </div>
@@ -123,10 +127,18 @@
 
   <div id="free-quote" class="free-quote">
     <div class="container">
-        <div class="text-center my-5 mt-0">
-            <h2 class="text-white">Common Financial Concerns</h2>
-            <p class="text-white">Consult a specialist for any Financial Issue.</p>
-          </div>
+       {% if section2 %}
+       <div class="text-center my-5 mt-0 text-white">
+        <h6>{{section2.name}}</h6>
+        <h4>{{section2.tag1}}</h4>
+        <p class="text-white">{{section2.tag2}}</p>
+      </div>
+      {% else %}
+      <div class="text-center my-5 mt-0">
+        <h2 class="text-white">Common Financial Concerns</h2>
+        <p class="text-white">Consult a specialist for any Financial Issue.</p>
+      </div>
+      {% endif %}
       <div class="row">
         {% if concerns %}
         {% for concern in concerns %}
@@ -174,14 +186,28 @@
             </div>
             <div class="col-lg-6 align-self-center  wow fadeInRight" data-wow-duration="1s" data-wow-delay="0.5s">
               <div class="about-right-content">
-                <div class="section-heading">
-                  <h6> About SecuritiesPesa</h6>
-                  <h4>We empower people to make informed decisions about the economic, financial and investment issues.</h4>
-                  <div class="line-dec"></div>
-                </div>
-                <p>SecuritiesPesa is a global consulting company founded in Kenya that creates information symmetry on Securities and financial Market, and in-depth industry analyses.</p>
-               
+                {% if panel %}
+               {% for p in panel %}
+               <div class="section-heading">
+                <h6>{{p.name}}</h6>
+                <h4>{{p.title}}</h4>
+                <div class="line-dec"></div>
               </div>
+              <p>{{p.description}}</p>
+             
+            </div>
+            {% endfor %}
+              {% else %}
+              <div class="section-heading">
+                <h6> About SecuritiesPesa1</h6>
+                <h4>We empower people to make informed decisions about the economic, financial and investment issues.</h4>
+                <div class="line-dec"></div>
+              </div>
+              <p>SecuritiesPesa is a global consulting company founded in Kenya that creates information symmetry on Securities and financial Market, and in-depth industry analyses.</p>
+             
+            </div>
+
+            {% endif %}
             </div>
           </div>
         </div>
@@ -193,11 +219,19 @@
     <div class="container">
       <div class="row">
         <div class="col-lg-12">
-          <div class="section-heading wow fadeIn" data-wow-duration="1s" data-wow-delay="0.5s">
-            <h6>How It Works</h6>
-            <h4>Using SecuritiesPesa helps to easily connect with Specialities at a time and place suitable to you. Here, we explain how your visit works.</em></h4>
-            <div class="line-dec"></div>
-          </div>
+         {% if how %}
+         <div class="section-heading wow fadeIn" data-wow-duration="1s" data-wow-delay="0.5s">
+          <h6>{{how.name}}</h6>
+          <h4>{{how.description}}</em></h4>
+          <div class="line-dec"></div>
+        </div>
+        {% else %}
+        <div class="section-heading wow fadeIn" data-wow-duration="1s" data-wow-delay="0.5s">
+          <h6>How It Works1</h6>
+          <h4>Using SecuritiesPesa helps to easily connect with Specialities at a time and place suitable to you. Here, we explain how your visit works.</em></h4>
+          <div class="line-dec"></div>
+        </div>
+        {% endif %}
         </div>
 
         <div class="row">
