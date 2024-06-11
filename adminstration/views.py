@@ -525,7 +525,10 @@ def manage_spesa(request):
         form = SpesaForm(request.POST, instance=spesa)
         if form.is_valid():
             form.save()
+            messages.success(request, 'Spesa updated successfully!')
             return redirect('adminstration:admin')
+        else:
+            messages.error(request, 'There was an error updating the Spesa.')
     else:
         form = SpesaForm(instance=spesa)
 
