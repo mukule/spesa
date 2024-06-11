@@ -1,0 +1,36 @@
+{% extends 'main/base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+<div id="free-quote1" class="free-quote1">
+   
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title text-center">Create Risk</h5>
+                    <form method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            {{ form.name|as_crispy_field }}
+                        </div>
+                        <div class="form-group mt-4">
+                            {{ form.description|as_crispy_field }}
+                        </div>
+                        <div class="form-group mt-4">
+                            {{ form.icon|as_crispy_field }}
+                        </div>
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-primary mt-2">Submit</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+{% endblock content %}

@@ -64,6 +64,42 @@
     </div>
   </div>
 
+  <div id="risks" class="risks">
+    <div class="container">
+        {% if spesa %}
+            <div class="text-center my-5 mt-0 text-white">
+                <h4 style="color: #0d75be;">
+                  {{spesa.description|safe}}
+                </h4>
+            </div>
+        {% else %}
+            <div class="text-center my-5 mt-0">
+                <h2 class="text-danger" style="color: red;">
+                    We ANALYZE. INTERPRET and ADVISE on Risks that affect your Financial Investments cushioning you against Shocks for Success.
+                </h2>
+            </div>
+        {% endif %}
+        
+        <div class="row">
+            {% for risk in risks %}
+                <div class="col-md-4 mb-4 d-flex align-items-stretch">
+                    <div class="risk-item text-center p-3 bg-light border-0 rounded">
+                        {% if risk.icon %}
+                            <img src="{{ risk.icon.url }}" alt="{{ risk.name }}" class="mb-3" style="width: 75px; height: 75px; object-fit: cover;">
+                        {% else %}
+                            <img src="{% static 'default/icon.png' %}" alt="Default Icon" class="mb-3" style="width: 75px; height: 75px; object-fit: cover;">
+                        {% endif %}
+                        <h5 class="risk-name">{{ risk.name }}</h5>
+                        <p class="risk-description">{{ risk.description }}</p>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+
+
 
   <div id="portfolio" class="our-portfolio section">
     <div class="container">
@@ -129,13 +165,13 @@
     <div class="container">
        {% if section2 %}
        <div class="text-center my-5 mt-0 text-white">
-        <h6>{{section2.name}}</h6>
+        <h2 style="color: #eb1b24;">{{section2.name}}</h2>
         <h4>{{section2.tag1}}</h4>
         <p class="text-white">{{section2.tag2}}</p>
       </div>
       {% else %}
       <div class="text-center my-5 mt-0">
-        <h2 class="text-white">Common Financial Concerns</h2>
+        <h2 class="text-danger" style="color: red;">Common Financial Concerns</h2>
         <p class="text-white">Consult a specialist for any Financial Issue.</p>
       </div>
       {% endif %}

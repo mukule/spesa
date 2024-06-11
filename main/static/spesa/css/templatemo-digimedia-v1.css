@@ -988,7 +988,7 @@ Banner Style
   background-repeat: no-repeat;
   background-position: center center;
   background-size: cover;
-  padding: 100px 0px 120px 0px;
+  padding: 100px 0px 0px 0px;
   position: relative;
   overflow: hidden;
 }
@@ -1602,7 +1602,19 @@ Free Quote
   text-align: center;
   position: relative;
   z-index: 2;
-  margin-top: 130px;
+  margin-top: 0px;
+}
+
+.risks {
+  background-color: #f6f6f6;
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
+  padding: 100px 0px;
+  text-align: center;
+  position: relative;
+  z-index: 2;
+  margin-top: 0px;
 }
 
 .free-quote1 {
@@ -1691,8 +1703,36 @@ Portfolio
 --------------------------------------------- 
 */
 
+.risk-item {
+  background-color: transparent !important;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+}
+
+.risk-item img {
+  width: 75px;
+  height: 75px;
+  object-fit: cover;
+  /* Removed border-radius to keep the images square */
+}
+
+.risk-item h5 {
+  margin-top: 10px;
+  font-size: 1.25em;
+  color: #333;
+}
+
+.risk-item p {
+  font-size: 1em;
+  color: #666;
+}
+
+
+
 .our-portfolio {
-  padding-top: 0px;
+  padding-top: 100px;
+  padding-bottom: 100px;
   overflow: hidden;
   position: relative;
 }
@@ -2203,7 +2243,7 @@ responsive
   }
   .main-banner {
     text-align: center;
-    padding: 226px 0px 30px 0px;
+    padding: 226px 0px 0px 0px;
   }
   .main-banner:before {
     display: none;

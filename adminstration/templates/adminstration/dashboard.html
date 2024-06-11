@@ -20,6 +20,9 @@
                                 <a href="#secs" onclick="showSection('secs')" class="category mt-1">Update Headers</a>
                             </li>
                             <li>
+                                <a href="#risks" onclick="showSection('risks')" class="category mt-1">Risk Management</a>
+                            </li>
+                            <li>
                                 <a href="#section2" onclick="showSection('section2')" class="category mt-1">Specialities</a>
                             </li>
                             <li>
@@ -54,6 +57,59 @@
             <div class="col-lg-10">
                 <div class="dtails-wrap">
                     <div id="content">
+
+                        <div id="risks">
+                            <div class="row">
+                                <div class="col">
+                                    <h2 class="title">Risk Management Details</h2>
+                                </div>
+                                <div class="col text-right">
+                                    <a href="{% url 'adminstration:create_risk' %}" class="btn btn-primary">Create Risk</a>
+                                </div>
+                            </div>
+                            <hr>
+                            {% if risks %}
+                                <div class="table-responsive">
+                                    <table class="table table-sm">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">#</th>
+                                                <th scope="col">Name</th>
+                                                <th scope="col">Description</th>
+                                                <th scope="col">Image</th>
+                                                <th scope="col">Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for risk in risks %}
+                                                <tr style="font-size: 0.875em;">
+                                                    <th scope="row">{{ forloop.counter }}</th>
+                                                    <td>{{ risk.name }}</td>
+                                                    <td>{{ risk.description }}</td>
+                                                    <td>
+                                                        {% if risk.icon %}
+                                                            <img src="{{ risk.icon.url }}" alt="{{ risk.name }}" style="width: 50px; height: 50px;">
+                                                        {% else %}
+                                                            No image available
+                                                        {% endif %}
+                                                    </td>
+                                                    <td>
+                                                        <a href="{% url 'adminstration:update_risk' risk.id %}" class="btn btn-sm btn-warning mr-2">
+                                                            Edit
+                                                        </a>
+                                                      
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            {% else %}
+                                <h2>No Risks Found</h2>
+                            {% endif %}
+                        </div>
+                        
+                        
                         <div id="hero">
                             <div class="row">
                                 <div class="col">
@@ -110,6 +166,17 @@
                               
                             </div>
                             <hr>
+                            {% if spesa %}
+                           <p>title</p> <br>
+                           {{spesa.description|safe}}
+                           <a href="{% url 'adminstration:manage_spesa' %}" class="btn btn-primary">Update Spesa Details</a>
+                        {% else %}
+                        <div class="col text-right">
+                            <a href="{% url 'adminstration:manage_spesa' %}" class="btn btn-primary">Update Spesa Details</a>
+                        </div>
+                        {% endif %}
+
+                        <hr>
                             {% if section1 %}
                             <div class="table-responsive">
                                 <table class="table table-sm">

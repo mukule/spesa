@@ -186,6 +186,22 @@ class HeroForm(forms.ModelForm):
         }
 
 
+class RiskForm(forms.ModelForm):
+    class Meta:
+        model = Risk
+        fields = ['name', 'description', 'icon']
+        labels = {
+            'name': '',
+            'description': '',
+            'icon': ''
+        }
+        widgets = {
+            'name': forms.TextInput(attrs={'placeholder': 'Name of the Risk', 'class': 'form-control'}),
+            'description': forms.Textarea(attrs={'placeholder': 'Risk Description', 'class': 'form-control'}),
+            'icon': forms.FileInput(attrs={'class': 'form-control'})
+        }
+
+
 class Section1Form(forms.ModelForm):
     class Meta:
         model = Section1
@@ -247,4 +263,16 @@ class HowForm(forms.ModelForm):
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter section name'}),
             'description': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Description'}),
+        }
+
+
+class SpesaForm(forms.ModelForm):
+    class Meta:
+        model = Spesa
+        fields = ['description']
+        labels = {
+            'description': 'How spesa Annalyze, interprete and advice',
+        }
+        widgets = {
+            'description': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Description', 'id': 'id_description'}),
         }

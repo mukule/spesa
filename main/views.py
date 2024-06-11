@@ -27,6 +27,7 @@ def index(request):
     abouts = About.objects.all()
     panel = Panel.objects.all()
     works = Works.objects.all()
+    risks = Risk.objects.all()
 
     try:
         hero_instance = Hero.objects.get(pk=1)
@@ -48,6 +49,11 @@ def index(request):
     except How.DoesNotExist:
         how_instance = None
 
+    try:
+        spesa_instance = Spesa.objects.get(pk=1)
+    except Spesa.DoesNotExist:
+        spesa_instance = None
+
     context = {
         'specialities': specialities,
         'concerns': concerns,
@@ -58,6 +64,8 @@ def index(request):
         'section1': section1_instance,
         'section2': section2_instance,
         'how': how_instance,
+        'risks': risks,
+        'spesa': spesa_instance,
 
     }
     return render(request, 'main/index.html', context)

@@ -52,7 +52,12 @@ urlpatterns = [
     path('create_or_edit_section2/', views.create_or_edit_section2,
          name='update_section2'),
     path('create_or_edit_how/', views.create_or_edit_how,
-         name='update_how')
+         name='update_how'),
+    path('manage_spesa/', views.manage_spesa,
+         name='manage_spesa'),
+    path('create_risk/', views.create_risk, name='create_risk'),
+    path('update_risk/<int:id>/', views.update_risk, name='update_risk'),
+
 
 
 ]

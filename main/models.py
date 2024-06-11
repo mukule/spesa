@@ -12,6 +12,16 @@ class Hero(models.Model):
         return self.title
 
 
+class Risk(models.Model):
+    name = models.CharField(max_length=100)
+    description = models.TextField(blank=True, null=True)
+    icon = models.ImageField(
+        upload_to='risks_icons/', default='default/icon.png')
+
+    def __str__(self):
+        return self.name
+
+
 class Speciality(models.Model):
     name = models.CharField(max_length=100)
     icon = models.ImageField(
@@ -199,3 +209,11 @@ class How(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class Spesa(models.Model):
+
+    description = models.TextField()
+
+    def __str__(self):
+        return self.description

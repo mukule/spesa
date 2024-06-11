@@ -10,7 +10,7 @@ class ConsultForm(forms.ModelForm):
             'description': 'Describe your Concern',
         }
         widgets = {
-            'description': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Description'}),
+            'description': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Description', 'id': 'description'}),
         }
 
 

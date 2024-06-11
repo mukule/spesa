@@ -19,7 +19,24 @@
     <link rel="stylesheet" href="{% static 'spesa/css/templatemo-digimedia-v1.css' %}">
     <link rel="stylesheet" href="{% static 'spesa/css/animated.css' %}">
     <link rel="stylesheet" href="{% static 'spesa/css/owl.css' %}">
-<!---->
+    
+    <script src="https://cdn.tiny.cloud/1/y0l34dm9zs3nnrc96omvprqdyztyk0mad4craj4n3dvqzqq2/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
+<!-- Place the following <script> and <textarea> tags your HTML's <body> -->
+    <script>
+        tinymce.init({
+          selector: 'textarea',
+          plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount checklist mediaembed casechange export formatpainter pageembed linkchecker a11ychecker tinymcespellchecker permanentpen powerpaste advtable advcode editimage advtemplate ai mentions tinycomments tableofcontents footnotes mergetags autocorrect typography inlinecss markdown textcolor colorpicker',
+          toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | forecolor backcolor | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
+          tinycomments_mode: 'embedded',
+          tinycomments_author: 'Author name',
+          mergetags_list: [
+            { value: 'First.Name', title: 'First Name' },
+            { value: 'Email', title: 'Email' },
+          ],
+          ai_request: (request, respondWith) => respondWith.string(() => Promise.reject("See docs to implement AI Assistant")),
+        });
+      </script>
+      
 
 </head>
 
@@ -74,10 +91,20 @@
     // Update the copyright text with the current year
     document.getElementById("copyright").innerHTML = "© " + currentYear + " SecuritiesPesa. All rights reserved";
 </script>
-<script>
-    CKEDITOR.replace('id_description'); 
-</script>
 
+
+<script>
+    // Initialize CKEditor for the textarea with id 'description'
+    CKEDITOR.replace('id_description', {
+        toolbar: [
+            { name: 'basicstyles', items: ['Bold', 'Italic', 'Underline'] },
+            { name: 'paragraph', items: ['NumberedList', 'BulletedList'] },
+            { name: 'links', items: ['Link', 'Unlink'] }
+        ],
+        height: 300,
+        width: 300
+    });
+</script>
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -100,13 +127,19 @@
         document.body.innerHTML = originalContents;
     }
 </script>
+
+
+
+
     
     <!---->
+    <script src="https://cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script>
     <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
     <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
     <script src="{% static 'spesa/js/owl-carousel.js' %}"></script>
     <script src="{% static 'spesa/js/animation.js' %}"></script>
     <script src="{% static 'spesa/js/imagesloaded.js' %}"></script>
     <script src="{% static 'spesa/js/custom.js' %}"></script>
+    
 </body>
 </html>

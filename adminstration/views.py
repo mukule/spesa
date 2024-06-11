@@ -21,6 +21,7 @@ def dashboard(request):
     abouts = About.objects.all()
     panel = Panel.objects.all()
     works = Works.objects.all()
+    risks = Risk.objects.all()
     categories = Category.objects.annotate(num_blogs=Count('blog'))
 
     # Retrieve all consults and order them by id in descending order
@@ -34,6 +35,7 @@ def dashboard(request):
     section1_instance = Section1.objects.first()
     section2_instance = Section2.objects.first()
     how_instance = How.objects.first()
+    spesa_instance = Spesa.objects.first()
     # Paginate the consults to display 10 per page
     paginator = Paginator(consults, 10)
 
@@ -60,6 +62,8 @@ def dashboard(request):
         'section1': section1_instance,
         'section2': section2_instance,
         'how': how_instance,
+        'spesa': spesa_instance,
+        'risks': risks,
     }
     return render(request, 'adminstration/dashboard.html', context)
 
@@ -511,3 +515,43 @@ def create_or_edit_how(request):
             form = HowForm()
 
     return render(request, 'adminstration/create_how_it_works.html', {'form': form})
+
+
+@login_required
+def manage_spesa(request):
+    spesa, created = Spesa.objects.get_or_create(id=1)
+
+    if request.method == 'POST':
+        form = SpesaForm(request.POST, instance=spesa)
+        if form.is_valid():
+            form.save()
+            return redirect('adminstration:admin')
+    else:
+        form = SpesaForm(instance=spesa)
+
+    return render(request, 'adminstration/manage_spesa.html', {'form': form})
+
+
+@login_required
+def create_risk(request):
+    if request.method == 'POST':
+        form = RiskForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('adminstration:admin')
+    else:
+        form = RiskForm()
+    return render(request, 'adminstration/create_risk.html', {'form': form})
+
+
+@login_required
+def update_risk(request, id):
+    risk = get_object_or_404(Risk, id=id)
+    if request.method == 'POST':
+        form = RiskForm(request.POST, request.FILES, instance=risk)
+        if form.is_valid():
+            form.save()
+            return redirect('adminstration:admin')
+    else:
+        form = RiskForm(instance=risk)
+    return render(request, 'adminstration/update_risk.html', {'form': form})
