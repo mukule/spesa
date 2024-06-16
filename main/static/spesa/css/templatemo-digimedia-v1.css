@@ -1605,6 +1605,20 @@ Free Quote
   margin-top: 0px;
 }
 
+.free-quote2 {
+  background-image: url(../images/quote-bg.jpg);
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
+  padding: 50px 0px;
+  text-align: center;
+  position: relative;
+  z-index: 2;
+  margin-top: 0px;
+  margin-top: 80px;
+}
+
+
 .risks {
   background-color: #f6f6f6;
   background-repeat: no-repeat;

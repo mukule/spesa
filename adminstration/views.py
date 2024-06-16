@@ -32,6 +32,11 @@ def dashboard(request):
     except Hero.DoesNotExist:
         hero_instance = None
 
+    try:
+        ad_instance = Ad.objects.get(pk=1)
+    except Ad.DoesNotExist:
+        ad_instance = None
+
     section1_instance = Section1.objects.first()
     section2_instance = Section2.objects.first()
     how_instance = How.objects.first()
@@ -64,6 +69,7 @@ def dashboard(request):
         'how': how_instance,
         'spesa': spesa_instance,
         'risks': risks,
+        'ad': ad_instance,
     }
     return render(request, 'adminstration/dashboard.html', context)
 
@@ -558,3 +564,21 @@ def update_risk(request, id):
     else:
         form = RiskForm(instance=risk)
     return render(request, 'adminstration/update_risk.html', {'form': form})
+
+
+@login_required
+def manage_ad(request):
+    ad_instance, created = Ad.objects.get_or_create(id=1)
+
+    if request.method == 'POST':
+        form = AdForm(request.POST, instance=ad_instance)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Ad updated successfully!')
+            return redirect('adminstration:admin')
+        else:
+            messages.error(request, 'There was an error updating the Ad.')
+    else:
+        form = AdForm(instance=ad_instance)
+
+    return render(request, 'adminstration/manage_ad.html', {'form': form})

@@ -276,3 +276,15 @@ class SpesaForm(forms.ModelForm):
         widgets = {
             'description': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Description', 'id': 'id_description'}),
         }
+
+
+class AdForm(forms.ModelForm):
+    class Meta:
+        model = Ad
+        fields = ['description']
+        labels = {
+            'description': 'Need Advice',
+        }
+        widgets = {
+            'description': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Description', 'id': 'id_description'}),
+        }

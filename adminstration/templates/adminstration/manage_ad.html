@@ -3,32 +3,30 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
-<div id="free-quote1" class="free-quote1 py-5">
+<div id="manage-ad" class="manage-ad py-5">
     <div class="container custom-container-01">
         <div class="row justify-content-center">
             <div class="col-lg-8">
-                <div class="apply-form-inner">
-                    <div class="contact-form">
+                <div class="form-inner">
+                    <div class="form-content">
 
                         <!-- Messages Section -->
-                        <div>
-                            {% if messages %}
-                                {% for message in messages %}
-                                    <div class="alert alert-{{ message.tags }} alert-dismissible" role="alert">
-                                        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                                        {{ message|safe|escape }}
-                                    </div>
-                                {% endfor %}
-                            {% endif %}
-                        </div>
+                        {% if messages %}
+                            {% for message in messages %}
+                                <div class="alert alert-{{ message.tags }} alert-dismissible" role="alert">
+                                    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                                    {{ message|safe|escape }}
+                                </div>
+                            {% endfor %}
+                        {% endif %}
 
                         <!-- Form Section -->
                         <form class="form" method="POST" enctype="multipart/form-data">
                             {% csrf_token %}
                             <div class="part">
-                                <h5 class="title text-center mb-4">Update the Analyze section</h5>
+                                <h5 class="title text-center mb-4">Update Ad</h5>
                                 <div class="form-element mb-3">
-                                    {{ form.description|as_crispy_field }}
+                                    {{ form|crispy }}
                                 </div>
                                 <div class="form-submit text-center">
                                     <button type="submit" class="btn btn-primary btn-active">Submit</button>

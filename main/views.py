@@ -1,3 +1,9 @@
+from .access_token import *
+from .pesapal import *
+from requests_oauthlib import OAuth1Session
+from urllib.parse import urlencode
+from requests_oauthlib import OAuth1
+from oauthlib.oauth1 import SIGNATURE_HMAC, Client
 from django.db.models import Sum
 import time
 from django.urls import reverse
@@ -15,13 +21,14 @@ from django.contrib.auth.decorators import login_required
 from main.models import *
 from django.db.models import Count
 from .forms import *
-from securitiespesa.settings import consumer_key, consumer_secret, pass_key
+from securitiespesa.settings import consumer_key, consumer_secret, pass_key, pesapal_consumer_key, pesapal_consumer_secret
 import requests
 from datetime import datetime
 business_short_code = '174379'
 
 
 def index(request):
+
     specialities = Speciality.objects.all()
     concerns = FinancialConcern.objects.all()
     abouts = About.objects.all()
@@ -33,6 +40,11 @@ def index(request):
         hero_instance = Hero.objects.get(pk=1)
     except Hero.DoesNotExist:
         hero_instance = None
+
+    try:
+        ad_instance = Ad.objects.get(pk=1)
+    except Ad.DoesNotExist:
+        ad_instance = None
 
     try:
         section1_instance = Section1.objects.get(pk=1)
@@ -66,6 +78,7 @@ def index(request):
         'how': how_instance,
         'risks': risks,
         'spesa': spesa_instance,
+        'ad': ad_instance,
 
     }
     return render(request, 'main/index.html', context)
@@ -152,6 +165,7 @@ def consult_detail(request, consult_id):
 
 @login_required
 def create_consult(request, speciality_id):
+
     speciality = get_object_or_404(Speciality, pk=speciality_id)
 
     if request.method == 'POST':
@@ -238,6 +252,7 @@ def format_phone_number(phone):
 
 @login_required
 def create_f_consult(request, concern_id):
+
     speciality = get_object_or_404(FinancialConcern, pk=concern_id)
 
     if request.method == 'POST':
@@ -394,7 +409,22 @@ def get_token():
     else:
         raise Exception('Failed to get access token')
 
-# Function to initiate M-PESA STK push
+
+def get_pesapal_token():
+    url = "https://cybqa.pesapal.com/pesapalv3/api/Auth/RequestToken"
+    payload = {
+        "consumer_key": pesapal_consumer_key,
+        "consumer_secret": pesapal_consumer_secret
+    }
+    headers = {
+        "Accept": "application/json",
+        "Content-Type": "application/json"
+    }
+    response = requests.post(url, json=payload, headers=headers)
+    data = response.json()
+    if "token" in data:
+        return data["token"]
+    return None
 
 
 def generate_password(business_short_code, passkey):
@@ -540,3 +570,69 @@ def update_response(request, response_id):
         form = ClientResponseForm(instance=response)
 
     return render(request, 'main/task_detail.html', {'form': form, 'response': response})
+
+
+def pesapal_iframe(request):
+    # Replace with your actual Pesapal consumer key and secret
+    consumer_key = pesapal_consumer_key
+    consumer_secret = pesapal_consumer_secret
+    # Update with your callback URL
+    callback_url = 'http://www.yourdomain.com/redirect/'
+
+    # Retrieve Pesapal token
+    token = get_pesapal_token()
+    if not token:
+        return HttpResponse("Failed to retrieve Pesapal token", status=500)
+
+    # Sample data for testing
+    amount = 10
+    desc = "consultation"
+    type = "MERCHANT"
+    reference = "consult-4"
+    first_name = "Nelson"
+    last_name = "Masibo"
+    email = "nelsonmasibo6@gmail.com"
+    phonenumber = "0704122212"
+
+    # Construct XML payload
+    post_xml = f"""<?xml version="1.0" encoding="utf-8"?>
+    <PesapalDirectOrderInfo 
+    xmlns:xsi="https://www.w3.org/2001/XMLSchema-instance" 
+    xmlns:xsd="https://www.w3.org/2001/XMLSchema" 
+    Amount="{amount:.2f}" 
+    Description="{desc}" 
+    Type="{type}" 
+    Reference="{reference}" 
+    FirstName="{first_name}" 
+    LastName="{last_name}" 
+    Email="{email}" 
+    PhoneNumber="{phonenumber}" 
+    xmlns="https://www.pesapal.com" />"""
+
+    try:
+        # OAuth1Session setup
+        oauth = OAuth1Session(client_key=consumer_key,
+                              client_secret=consumer_secret,
+                              resource_owner_key=token,
+                              callback_uri=callback_url)
+
+        # Endpoint for iframe URL
+        iframelink = 'https://demo.pesapal.com/api/PostPesapalDirectOrderV4'
+
+        # Request iframe URL from Pesapal
+        response = oauth.get(iframelink, params={
+                             'pesapal_request_data': post_xml})
+
+        # Check if request was successful
+        if response.status_code == 200:
+            iframe_src = response.url
+            print(iframe_src)
+            return render(request, 'main/create_consult.html', {'iframe_src': iframe_src})
+        else:
+            return HttpResponse("Failed to retrieve iframe URL from Pesapal", status=response.status_code)
+
+    except requests.RequestException as e:
+        return HttpResponse(f"Error occurred: {str(e)}", status=500)
+
+    # Render default template if not POST request
+    return render(request, 'main/create_consult.html')

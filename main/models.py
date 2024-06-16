@@ -217,3 +217,11 @@ class Spesa(models.Model):
 
     def __str__(self):
         return self.description
+
+
+class Ad(models.Model):
+
+    description = models.TextField()
+
+    def __str__(self):
+        return self.description

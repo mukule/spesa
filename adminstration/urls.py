@@ -57,6 +57,8 @@ urlpatterns = [
          name='manage_spesa'),
     path('create_risk/', views.create_risk, name='create_risk'),
     path('update_risk/<int:id>/', views.update_risk, name='update_risk'),
+    path('manage_ad/', views.manage_ad,
+         name='manage_ad'),
 
 
 

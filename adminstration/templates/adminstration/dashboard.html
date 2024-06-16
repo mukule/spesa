@@ -177,6 +177,19 @@
                         {% endif %}
 
                         <hr>
+
+                        {% if ad %}
+                       
+                        {{ad.description|safe}}  <br>
+                        <a href="{% url 'adminstration:manage_ad' %}" class="btn btn-primary">Update ad Details</a>
+                     {% else %}
+                     <div class="col text-right">
+                        <p>No details for the ad yet</p>
+                         <a href="{% url 'adminstration:manage_ad' %}" class="btn btn-primary">Update ad Details</a>
+                     </div>
+                     {% endif %}
+
+                        <hr>
                             {% if section1 %}
                             <div class="table-responsive">
                                 <table class="table table-sm">

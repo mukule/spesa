@@ -90,7 +90,7 @@
                             <img src="{% static 'default/icon.png' %}" alt="Default Icon" class="mb-3" style="width: 75px; height: 75px; object-fit: cover;">
                         {% endif %}
                         <h5 class="risk-name">{{ risk.name }}</h5>
-                        <p class="risk-description">{{ risk.description }}</p>
+                        <p class="risk-description">{{ risk.description|safe }}</p>
                     </div>
                 </div>
             {% endfor %}
@@ -250,6 +250,29 @@
       </div>
     </div>
   </div>
+
+
+  
+
+  <div id="free-quote2" class="free-quote2">
+    <div class="container">
+       {% if ad %}
+       <div class="text-center mt-0 text-white">
+        <h2>{{ad.description|safe}}</h2>
+       
+      </div>
+      {% else %}
+      <div class="text-center mt-0">
+        <h2 class="text-white">Thinking of Investing. We are there for yous. 
+          CHAT. CALL. EMAIL our Specialists for an Advice at the Comfort of your PLACE. TIME and VALUE for money.
+          </h2>
+       
+      </div>
+      {% endif %}
+    </div>
+  </div>
+
+
 
   <div id="contact" class="contact-us section">
     <div class="container">
