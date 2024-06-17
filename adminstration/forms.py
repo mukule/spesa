@@ -268,23 +268,25 @@ class HowForm(forms.ModelForm):
 
 class SpesaForm(forms.ModelForm):
     class Meta:
-        model = Spesa
+        model = Risk
         fields = ['description']
         labels = {
-            'description': 'How spesa Annalyze, interprete and advice',
+            'description': 'How spesa analyzes, interprets, and advises',
         }
         widgets = {
-            'description': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Description', 'id': 'id_description'}),
+            'description': forms.Textarea(attrs={'placeholder': 'Risk Analysis', 'class': 'form-control'}),
+
         }
 
 
 class AdForm(forms.ModelForm):
     class Meta:
-        model = Ad
+        model = Risk
         fields = ['description']
         labels = {
-            'description': 'Need Advice',
+            'description': 'Need advice ?',
         }
         widgets = {
-            'description': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Description', 'id': 'id_description'}),
+            'description': forms.Textarea(attrs={'placeholder': 'Invest with us text', 'class': 'form-control'}),
+
         }

@@ -52,7 +52,7 @@
           {% else %}
               <li><a href="{% url 'users:login' %}">Login</a></li>
           {% endif %}
-              <li class="scroll-to-section"><a href="#blog">Blog</a></li>
+              <li class="scroll-to-section"><a href="#">Media</a></li>
               {% if user.is_authenticated %}
               <div class="btn-wrap">
                 <li class="scroll-to-section"><div class="border-first-button"><a href="{% url 'users:logout' %}">Logout</a></div></li> 
