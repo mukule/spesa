@@ -582,3 +582,21 @@ def manage_ad(request):
         form = AdForm(instance=ad_instance)
 
     return render(request, 'adminstration/manage_ad.html', {'form': form})
+
+
+@login_required
+def update_terms(request):
+    terms_instance, created = Terms.objects.get_or_create(id=1)
+
+    if request.method == 'POST':
+        form = TermsForm(request.POST, instance=terms_instance)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Terms of Refence updated successfully!')
+            return redirect('adminstration:admin')
+        else:
+            messages.error(request, 'There was an error updating the Terms.')
+    else:
+        form = TermsForm(instance=terms_instance)
+
+    return render(request, 'adminstration/update_terms.html', {'form': form})

@@ -117,7 +117,22 @@
 
 
 
-
+<script>
+    document.querySelector('form').addEventListener('submit', function(event) {
+        // Get the TinyMCE editor instance
+        var editor = tinymce.get('textarea');
+        if (editor) {
+            // Get the content of the editor
+            var content = editor.getContent();
+            // Check if the content is valid
+            if (!content.trim()) {
+                alert('Description field is invalid!');
+                editor.focus(); // Focus on the TinyMCE editor
+                event.preventDefault(); // Prevent form submission
+            }
+        }
+    });
+</script>
     
     <!---->
     <script src="https://cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script>

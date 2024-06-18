@@ -158,10 +158,32 @@
     </div>
   </div>
 
+
+  
+
+  <div id="free-quote3" class="free-quote3">
+    <div class="container">
+       {% if ad %}
+       <div class="text-center mt-0 text-white">
+        <h4>{{ad.description|safe}}</h4>
+       
+      </div>
+      {% else %}
+      <div class="text-center mt-0 mb-4">
+        <h4>Thinking of Investing. We are there for yous. 
+          CHAT. CALL. EMAIL our Specialists for an Advice at the Comfort of your PLACE. TIME and VALUE for money.
+          </h4>
+          <div class="line-dec"></div>
+       
+      </div>
+      {% endif %}
+    </div>
+  </div>
+
   
 
 
-  <div id="free-quote" class="free-quote">
+  <div id="free-quote" class="free-quote mt-4">
     <div class="container">
        {% if section2 %}
        <div class="text-center my-5 mt-0 text-white">
@@ -206,16 +228,16 @@
           <div class="row">
             <div class="col-lg-6">
               <div class="about-left-image  wow fadeInLeft" data-wow-duration="1s" data-wow-delay="0.5s">
-               
-{% if panel %}
+                            
+              {% if panel %}
 
-           {% for p in panel %}
-          
-                <img src="{{p.image.url}}" alt="">
-          
-        {% endfor %}
-     
-{% endif %}
+                        {% for p in panel %}
+                        
+                              <img src="{{p.image.url}}" alt="">
+                        
+                      {% endfor %}
+                  
+              {% endif %}
 
 
               </div>
@@ -253,24 +275,6 @@
 
 
   
-
-  <div id="free-quote2" class="free-quote2">
-    <div class="container">
-       {% if ad %}
-       <div class="text-center mt-0 text-white">
-        <h2>{{ad.description|safe}}</h2>
-       
-      </div>
-      {% else %}
-      <div class="text-center mt-0">
-        <h2 class="text-white">Thinking of Investing. We are there for yous. 
-          CHAT. CALL. EMAIL our Specialists for an Advice at the Comfort of your PLACE. TIME and VALUE for money.
-          </h2>
-       
-      </div>
-      {% endif %}
-    </div>
-  </div>
 
 
 

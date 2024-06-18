@@ -40,7 +40,7 @@
             <ul class="nav">
               <li class="scroll-to-section"><a href="{% url 'main:index' %}" class="active">Home</a></li>
               <li class="scroll-to-section"><a href="http://securitiespesa.com/" target="_blank">About Us</a></li>
-              <li class="scroll-to-section"><a href="#services">Terms & Conditions</a></li>
+              <li class="scroll-to-section"><a href="{% url 'main:terms' %}">Terms & Conditions</a></li>
               {% if user.is_authenticated %}
               {% if user.access_level == 3 %}
                   <li><a href="{% url 'main:dashboard' %}">Dashboard</a></li>

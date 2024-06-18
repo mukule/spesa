@@ -7,7 +7,7 @@ urlpatterns = [
     path("", views.index, name="index"),
     path("choices/", views.choice, name="u"),
     path("dashboard/", views.dashboard, name="dashboard"),
-    path("blogs/", views.blogs, name="blogs"),
+    path("terms/", views.terms, name="terms"),
     path("consultant/", views.consultant, name="consultant"),
     path('consult/<int:speciality_id>/',
          views.create_consult, name='consult'),

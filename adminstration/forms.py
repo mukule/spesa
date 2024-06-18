@@ -290,3 +290,21 @@ class AdForm(forms.ModelForm):
             'description': forms.Textarea(attrs={'placeholder': 'Invest with us text', 'class': 'form-control'}),
 
         }
+
+
+class TermsForm(forms.ModelForm):
+    descriptions = forms.CharField(
+        required=False,
+        widget=forms.Textarea(attrs={
+            'placeholder': 'Update Terms of Reference',
+            'id': 'textarea',
+            'class': 'form-control'
+        })
+    )
+
+    class Meta:
+        model = Terms
+        fields = ['descriptions']
+        labels = {
+            'descriptions': '',
+        }

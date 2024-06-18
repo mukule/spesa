@@ -80,6 +80,7 @@ def index(request):
         'spesa': spesa_instance,
         'ad': ad_instance,
 
+
     }
     return render(request, 'main/index.html', context)
 
@@ -88,11 +89,12 @@ def choice(request):
     return render(request, 'main/choice.html')
 
 
-def blogs(request):
-    latest_blog = Blog.objects.latest('created_at')
-    last_five_blogs = Blog.objects.order_by('-created_at')[:5]
-    all_categories = Category.objects.annotate(num_blogs=Count('blog'))
-    return render(request, 'main/blogs.html', {'blog': latest_blog, 'recent_blogs': last_five_blogs, 'categories': all_categories})
+def terms(request):
+    try:
+        terms_instance = Terms.objects.get(pk=1)
+    except Terms.DoesNotExist:
+        terms_instance = None
+    return render(request, 'main/terms.html',  {'terms': terms_instance})
 
 
 @login_required

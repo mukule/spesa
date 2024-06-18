@@ -59,6 +59,8 @@ urlpatterns = [
     path('update_risk/<int:id>/', views.update_risk, name='update_risk'),
     path('manage_ad/', views.manage_ad,
          name='manage_ad'),
+    path('update_terms/', views.update_terms,
+         name='update_terms'),
 
 
 

@@ -225,3 +225,11 @@ class Ad(models.Model):
 
     def __str__(self):
         return self.description
+
+
+class Terms(models.Model):
+
+    descriptions = models.TextField()
+
+    def __str__(self):
+        return self.descriptions
