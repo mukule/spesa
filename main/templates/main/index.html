@@ -248,7 +248,7 @@
                {% for p in panel %}
                <div class="section-heading">
                 <h6>{{p.name}}</h6>
-                <h4>{{p.title}}</h4>
+                <h4>{{p.title|safe}}</h4>
                 <div class="line-dec"></div>
               </div>
               <p>{{p.description}}</p>
